@@ -141,7 +141,20 @@ services:
       # request fails" with nothing useful in the server log.
       - key: CORS_ORIGIN
         value: https://sprout-game.vercel.app
-      - key: FIREBASE_SERVICE_ACCOUNT_JSON
+      # Base64 rather than raw JSON, and the reason is the dashboard field.
+      # The service account is pretty-printed multi-line JSON whose private_key
+      # is itself a string full of \n escapes, and pasting that into a web form
+      # is how it arrives truncated, re-wrapped or empty. firebase.ts reads
+      # either, preferring _JSON, so leave that one unset — an empty string is
+      # falsy and falls through, but a half-pasted one is not and would win.
+      #
+      # Produce the value with:
+      #   base64 -i server/serviceAccountKey.json | pbcopy
+      #
+      # Getting this wrong does not crash the service. It boots, answers
+      # /api/health 200, and fails every Firestore route with a 500;
+      # /api/health/ready is where it shows up, as firestore: failed.
+      - key: FIREBASE_SERVICE_ACCOUNT_BASE64
         sync: false
       # Every scan writes its species sprite here. sprite-storage.ts throws
       # without it, which fails the whole scan-to-archive path (UC6 -> UC4).
