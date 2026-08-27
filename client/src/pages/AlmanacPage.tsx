@@ -87,7 +87,18 @@ export default function AlmanacPage() {
           <h1 className="font-pixel text-outline text-2xl leading-tight sm:text-4xl">
             The Almanac
           </h1>
-          <p className="mt-4 text-sm leading-relaxed text-white/75 sm:text-base">
+          {/*
+            sm:text-[1rem] rather than sm:text-base. `--color-base` is declared
+            in @theme (index.css), so Tailwind generates a `text-base` *colour*
+            utility that collides with the built-in font size — see the note in
+            LandingPage. That note's fix is to state the colour after, which
+            works between two unprefixed utilities; it does not work here,
+            because a `sm:` variant is emitted after the unprefixed
+            `text-white/75` and wins at every width above the breakpoint. This
+            paragraph rendered #0c082a on the dark hero. An explicit length
+            cannot be read as a colour at all.
+          */}
+          <p className="mt-4 text-sm leading-relaxed text-white/75 sm:text-[1rem]">
             Fifty plants you can find in Singapore. Scan one and it is recorded
             here for everyone — the first person to bring each species in is the
             one the record remembers.
@@ -107,7 +118,8 @@ export default function AlmanacPage() {
         ) : (
           <>
             <div className="flex flex-wrap items-end justify-between gap-4 py-6">
-              <p className="font-pixel text-sm sm:text-base">
+              {/* Explicit length, not sm:text-base — see the hero above. */}
+              <p className="font-pixel text-sm sm:text-[1rem]">
                 {almanac.discovered} of {almanac.total} found
               </p>
 
