@@ -4,11 +4,15 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 import LandingPage from './LandingPage';
 
 /**
- * The almanac section was removed from this page — the feature stays in the
- * codebase but is not part of the public site for now. These tests hold that
- * removal in place: the page still renders, and it neither shows the grid nor
- * asks the API for it. The suite that covered the section itself went with it;
- * restore it from git history when the section comes back.
+ * The almanac is not on this page, and these tests hold that in place: the
+ * landing page still renders, and it neither shows the grid nor asks the API
+ * for it.
+ *
+ * That used to mean the feature was shelved. It no longer does — the almanac
+ * came back as a page of its own at `/almanac`, reached from the nav, with its
+ * own suite in AlmanacPage.test.tsx. What this file now pins is the division:
+ * the landing page stays one fetch lighter on the first screen a visitor sees,
+ * and the grid lives where someone has chosen to go and look at it.
  */
 
 const apiMocks = vi.hoisted(() => ({

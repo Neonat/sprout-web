@@ -206,7 +206,7 @@ export function taxonSpeciesKey(gbifId: number): string {
  *
  * Deliberately NOT data/almanac's almanacIdForSpecies, which looks like it
  * does this job and does a different one. That function answers "which of the
- * almanac's 200 species might this identification be?", so it lower-cases
+ * almanac's 50 species might this identification be?", so it lower-cases
  * before testing in order to tolerate whatever capitalisation an identifier
  * returns — which makes it read `Unknown Plant Species` as the binomial
  * `unknown-plant`, quietly truncating a placeholder into a species. Harmless

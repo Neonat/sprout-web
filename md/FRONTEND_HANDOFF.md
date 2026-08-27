@@ -144,7 +144,7 @@ http://localhost:3001
 | `POST` | `/api/avatar` | Bearer token | Save a scanned plant into the archive |
 | `DELETE` | `/api/avatar/:avatarId` | Bearer token | Remove one owned avatar (archive shovel); 204 on success, 404 if not yours |
 | `POST` | `/api/query/submit` | none | Submit contact/query ticket |
-| `GET` | `/api/almanac` | **none** | 200-species almanac: taxonomy + found/not-found + counts |
+| `GET` | `/api/almanac` | **none** | 50-species almanac: taxonomy + found/not-found + counts |
 | `GET` | `/api/almanac/:speciesId` | Bearer token | Adds the first finder, the date and their photo |
 | `GET` | `/api/admin/almanac` | Bearer token + ADMIN_EMAILS | Full taxonomy with finders, plus off-list discoveries |
 | `POST` | `/api/admin/cleanup` | Bearer token + ADMIN_EMAILS | Dry-run/delete expired web uploads |
@@ -198,10 +198,10 @@ What the Scan screen sends after a pipeline run finishes, via
 
 ## The Almanac (`GET /api/almanac`)
 
-200 Singapore flowering plants, and which of them players have brought in.
+50 Singapore plants, and which of them players have brought in.
 
-- **The list endpoint is public and deliberately anonymous.** It is the landing
-  page's centrepiece, shown to visitors who have never signed up, so it returns
+- **The list endpoint is public and deliberately anonymous.** It backs the
+  `/almanac` page, shown to visitors who have never signed up, so it returns
   the taxonomy plus `discovered` and `discoveryCount` and *nothing a player
   contributed* — no uid, no display name, no photograph.
 - **`GET /api/almanac/:speciesId` requires a login**, and is the only place the

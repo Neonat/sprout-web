@@ -19,7 +19,7 @@ vi.mock('../services/sproutApi', () => apiMocks);
 
 const ALMANAC = {
   source: 'Chong, Tan & Corlett (2009)',
-  total: 200,
+  total: 50,
   discovered: 1,
   species: [
     {
@@ -333,7 +333,7 @@ describe('AdminPage operations panels', () => {
   it('shows the taxonomy with who found what', async () => {
     renderAdmin();
 
-    expect(await screen.findByText(/1 of 200 species discovered/i)).toBeInTheDocument();
+    expect(await screen.findByText(/1 of 50 species discovered/i)).toBeInTheDocument();
     expect(screen.getByText('NatTheBotanist')).toBeInTheDocument();
     expect(screen.getAllByText('Fagraea fragrans').length).toBeGreaterThan(0);
     expect(screen.getByText('Not yet found')).toBeInTheDocument();

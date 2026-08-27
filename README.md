@@ -77,7 +77,7 @@ Developing without Docker, seeding data, and troubleshooting are covered in
 | **Creature archive** | Every species you have discovered, with habitat, conservation status, and battle statistics derived deterministically from the species name — the same plant yields the same creature on every machine. |
 | **PVE battles** | Turn-based combat against a fixed opponent under a seeded RNG. Sessions are stored as event logs and re-simulated on every read, so a server restart cannot corrupt a battle in progress. |
 | **Leaderboards** | XP and first-discovery rankings, computed as read-only projections so a ranking can never disagree with the records it summarises. |
-| **Almanac** | A public reference of 200 flowering plants findable in Singapore. |
+| **Almanac** | A public reference of 50 plants findable in Singapore, at `/almanac`. |
 | **Accounts** | Firebase Auth with email verification, password reset, and a fail-closed operator tier for admin tooling. |
 | **Contact tickets** | Query submission with independent submitter and administrator notification. |
 

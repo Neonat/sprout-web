@@ -1,6 +1,6 @@
 # 🌱 Sprout Web App
 
-**Scan. Grow. Battle.** — the web platform for Sprout (50.003 ESC, Cohort 3 Team 2): auth, Pokédex-style plant avatar archive, GenAI sprite pipeline, PVE battles, a public almanac of 200 Singapore flowering plants, an admin dashboard (API health, Firestore cleanup, discoveries), and a contact/query-ticket system. **Stack: TypeScript everywhere** — React + Vite (frontend) and Node.js + Express (backend), with **Cloud Firestore** as the database (Firebase Auth for login).
+**Scan. Grow. Battle.** — the web platform for Sprout (50.003 ESC, Cohort 3 Team 2): auth, Pokédex-style plant avatar archive, GenAI sprite pipeline, PVE battles, a public almanac of 50 Singapore plants, an admin dashboard (API health, Firestore cleanup, discoveries), and a contact/query-ticket system. **Stack: TypeScript everywhere** — React + Vite (frontend) and Node.js + Express (backend), with **Cloud Firestore** as the database (Firebase Auth for login).
 
 > 👉 **Building the frontend? Read [`md/FRONTEND_HANDOFF.md`](../md/FRONTEND_HANDOFF.md) first** — it's the fast path: run the backend, call the API, done.
 
@@ -317,8 +317,9 @@ localStorage.setItem('sprout-dev-session',
 
 ### The almanac taxonomy
 
-The landing page and the admin dashboard share a fixed list of 200 Singapore
-flowering plants, in `server/data/almanac-taxonomy.json`. It is derived from:
+The `/almanac` page and the admin dashboard share a fixed list of 50 Singapore
+plants, in `server/data/almanac-taxonomy.json`. The species are curated in
+`scripts/almanac-curated.json`; their details are derived from:
 
 > Chong, K. Y., Tan, H. T. W. & Corlett, R. T. (2009). *A Checklist of the Total
 > Vascular Plant Flora of Singapore: Native, Naturalised and Cultivated
@@ -408,7 +409,7 @@ Every command in the repo, with these caveats spelled out: [`docs/COMMANDS.md`](
 | GET | `/api/avatar` | Bearer token | list caller's avatars (paginated) |
 | GET | `/api/avatar/:id` | Bearer token | one avatar (ownership-checked) |
 | POST | `/api/avatar` | Bearer token | save a scanned plant into the archive |
-| GET | `/api/almanac` | **—** | the 200-species almanac: found / not found + tallies |
+| GET | `/api/almanac` | **—** | the 50-species almanac: found / not found + tallies |
 | GET | `/api/almanac/:speciesId` | optional | one species; a login adds the finder, date and photo |
 | POST | `/api/battle/pve/start` | Bearer token | start a PVE battle with one of your avatars |
 | GET/POST | `/api/battle/pve/:sessionId`(`/action`, `/abandon`) | Bearer token | read a session, take a turn, concede |
