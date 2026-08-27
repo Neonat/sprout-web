@@ -48,7 +48,9 @@ function renderHeader(profile: AuthProfile | null) {
     <MemoryRouter>
       <AuthContext.Provider value={authValue(profile)}>
         <NavigationLockProvider>
-          <AppHeader />
+          {/* The game nav: this file asserts on the operator group and on
+              Scan being live for a player, and both live there. */}
+          <AppHeader variant="game" />
         </NavigationLockProvider>
       </AuthContext.Provider>
     </MemoryRouter>

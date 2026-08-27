@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react';
+import { cleanup, render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { describe, expect, it, vi } from 'vitest';
 import {
@@ -11,21 +11,23 @@ import type { AuthProfile } from '../../services/sproutApi';
 import AppHeader from './AppHeader';
 
 /**
- * The nav answers three audiences, and the difference between "greyed out" and
- * "absent" carries meaning:
+ * Two navs, and three states a label can be in. The difference between
+ * "greyed" and "absent" carries meaning, and the variant decides which applies:
  *
- *   greyed  — you could reach this by verifying your account (Scan, Archive,
- *             PVE Battle)
- *   absent  — no amount of signing in gets you here (Studio, API Test, Ticket
- *             Manager, Admin)
+ *   greyed  — this nav is for you, but you must verify to use this tab
+ *             (Scan, Archive, PVE Battle on the game nav)
+ *   absent  — this nav is not where that lives, or no amount of signing in
+ *             gets you there (the operator tools, anywhere)
  *
  * Showing an operator tool as disabled would read as "log in to access", which
- * is a lie; hiding a game screen would leave a visitor with no idea the game
- * exists. So each rule is asserted on both axes.
+ * is a lie. Greying the game tabs on the GAME nav is honest — verifying really
+ * does open them. Showing them at all on the document nav is what stopped
+ * making sense: a visitor reading the landing page was given three dead tabs
+ * before they had any reason to want them.
  */
 
 const PLAYER_TABS = ['Scan', 'Archive', 'PVE Battle'];
-const PUBLIC_TABS = ['Home', 'Ranking', 'Contact'];
+const DOCUMENT_TABS = ['Home', 'Almanac', 'Ranking', 'Contact'];
 const OPERATOR_TABS = ['Studio', 'API Test', 'Ticket Manager', 'Admin'];
 
 function authValue(
@@ -54,12 +56,16 @@ function profileFor(isAdmin: boolean): AuthProfile {
   };
 }
 
-function renderNav(status: AuthStatus, profile: AuthProfile | null) {
+function renderNav(
+  status: AuthStatus,
+  profile: AuthProfile | null,
+  variant: 'document' | 'game' = 'document'
+) {
   render(
     <MemoryRouter>
       <AuthContext.Provider value={authValue(status, profile)}>
         <NavigationLockProvider>
-          <AppHeader />
+          <AppHeader variant={variant} />
         </NavigationLockProvider>
       </AuthContext.Provider>
     </MemoryRouter>
@@ -89,51 +95,93 @@ function expectAbsent(nav: HTMLElement, labels: string[]) {
 }
 
 describe('AppHeader nav by audience', () => {
-  it('gives a signed-out visitor the public three, greys the game, hides the tools', () => {
+  it('gives a signed-out visitor the document tabs and none of the game', () => {
     const nav = renderNav('signed-out', null);
 
-    expectOpen(nav, PUBLIC_TABS);
-    expectGreyed(nav, PLAYER_TABS);
+    expectOpen(nav, DOCUMENT_TABS);
+    // Absent, not greyed. They belong to the other nav now.
+    expectAbsent(nav, PLAYER_TABS);
     expectAbsent(nav, OPERATOR_TABS);
   });
 
-  /* An unverified account has a session but cannot pass ProtectedRoute, so it
-   * gets the visitor's nav rather than the player's — showing Scan as live
-   * would promise a page that immediately redirects to /verify-email. */
-  it('treats an unverified account as a visitor', () => {
-    const nav = renderNav('unverified', null);
+  /* An unverified account has a session but cannot pass ProtectedRoute, so on
+   * the game nav it gets the greyed tabs rather than live ones — showing Scan
+   * as live would promise a page that immediately redirects to
+   * /verify-email. */
+  it('treats an unverified account as a visitor on the game nav', () => {
+    const nav = renderNav('unverified', null, 'game');
 
-    expectOpen(nav, PUBLIC_TABS);
     expectGreyed(nav, PLAYER_TABS);
+    expectOpen(nav, ['Ranking']);
     expectAbsent(nav, OPERATOR_TABS);
+  });
+
+  it('greys the game tabs for a signed-out visitor who reaches a game page', () => {
+    // Ranking is public but lives in the game shell, so this is reachable.
+    const nav = renderNav('signed-out', null, 'game');
+
+    expectGreyed(nav, PLAYER_TABS);
+    expectOpen(nav, ['Ranking']);
   });
 
   it('opens the game to a verified player but still hides the tools', () => {
-    const nav = renderNav('authenticated', profileFor(false));
+    const nav = renderNav('authenticated', profileFor(false), 'game');
 
-    expectOpen(nav, [...PUBLIC_TABS, ...PLAYER_TABS]);
+    expectOpen(nav, [...PLAYER_TABS, 'Ranking']);
     expectAbsent(nav, OPERATOR_TABS);
   });
 
-  it('shows everything to a superadmin', () => {
-    const nav = renderNav('authenticated', profileFor(true));
-
-    expectOpen(nav, [...PUBLIC_TABS, ...PLAYER_TABS, ...OPERATOR_TABS]);
+  it('shows the operator group on both navs, to a superadmin only', () => {
+    expectOpen(renderNav('authenticated', profileFor(true)), [
+      ...DOCUMENT_TABS,
+      ...OPERATOR_TABS,
+    ]);
+    // Auto-cleanup runs between tests, not within one, and a second render
+    // would leave two navs in the document for getByRole to choose between.
+    cleanup();
+    expectOpen(renderNav('authenticated', profileFor(true), 'game'), [
+      ...PLAYER_TABS,
+      ...OPERATOR_TABS,
+    ]);
   });
 
-  it('orders player tabs first, then a divider, then the operator tools', () => {
-    const nav = renderNav('authenticated', profileFor(true));
+  /** The almanac is public and belongs to the document half. A player reaches
+   *  it from the Archive rather than from a fifth game tab. */
+  it('puts Almanac on the document nav and not the game nav', () => {
+    expectOpen(renderNav('signed-out', null), ['Almanac']);
+    cleanup();
+    expectAbsent(renderNav('authenticated', profileFor(false), 'game'), ['Almanac']);
+  });
 
+  it('orders each nav\'s own tabs first, then a divider, then the tools', () => {
+    const labelsOf = (nav: HTMLElement) =>
+      Array.from(nav.children).map((child) =>
+        child.classList.contains('nav-divider') ? '|' : child.textContent
+      );
+
+    expect(labelsOf(renderNav('authenticated', profileFor(true)))).toEqual([
+      'Home',
+      'Almanac',
+      'Ranking',
+      'Contact',
+      '|',
+      'Admin',
+      'Studio',
+      'API Test',
+      'Ticket Manager',
+    ]);
+  });
+
+  it('orders the game nav the same way', () => {
+    const nav = renderNav('authenticated', profileFor(true), 'game');
     const labels = Array.from(nav.children).map((child) =>
       child.classList.contains('nav-divider') ? '|' : child.textContent
     );
     expect(labels).toEqual([
-      'Home',
       'Scan',
       'Archive',
       'PVE Battle',
       'Ranking',
-      'Contact',
       '|',
       'Admin',
       'Studio',
@@ -158,5 +206,7 @@ describe('AppHeader nav by audience', () => {
    * requests at it, so it moved behind the grant with the other tools. */
   it('keeps API Test away from signed-out visitors and ordinary players', () => {
     expectAbsent(renderNav('signed-out', null), ['API Test']);
+    cleanup();
+    expectAbsent(renderNav('authenticated', profileFor(false), 'game'), ['API Test']);
   });
 });

@@ -152,7 +152,9 @@ function TestShell({ allowBattleUnmount = false }) {
   return (
     <AuthContext.Provider value={authValue}>
       <NavigationLockProvider>
-        <AppHeader />
+        {/* Battle is a game page, so the header under test is the game nav —
+            Archive is the tab these tests lock and unlock. */}
+        <AppHeader variant="game" />
         {allowBattleUnmount && (
           <button type="button" onClick={() => setShowBattle(false)}>
             Unmount battle view

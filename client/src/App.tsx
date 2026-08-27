@@ -11,6 +11,7 @@ import LoginPage from './pages/LoginPage';
 import SignupPage from './pages/SignupPage';
 import VerifyEmailPage from './pages/VerifyEmailPage';
 import ContactPage from './pages/ContactPage';
+import AlmanacPage from './pages/AlmanacPage';
 import ArchivePage from './pages/ArchivePage';
 import ScanPage from './pages/ScanPage';
 import BattlePage from './pages/BattlePage';
@@ -71,7 +72,7 @@ function GameLayout() {
   return (
     <div className="game-shell">
       <SkipLink />
-      <AppHeader />
+      <AppHeader variant="game" />
       {/* The id rides the existing body box rather than a new wrapper —
           `.game-shell-body > .screen` is a direct-child selector. */}
       <div className="game-shell-body" id={MAIN_CONTENT_ID} tabIndex={-1}>
@@ -95,7 +96,10 @@ function StudioLayout() {
   return (
     <div className="studio-shell">
       <SkipLink />
-      <AppHeader />
+      {/* The studio is an operator tool reached from the operator group, which
+          both navs carry. It takes the game nav so leaving it lands a player
+          back among the boards rather than on the marketing pages. */}
+      <AppHeader variant="game" />
       {/* No id here, unlike the other two shells: StudioPage renders its own
           <main id="main-content">, and putting the id on this wrapper too made
           it a duplicate — invalid, and the skip link resolved to whichever
@@ -122,6 +126,10 @@ function App() {
                 <Route path="/signup" element={<SignupPage />} />
                 <Route path="/verify-email" element={<VerifyEmailPage />} />
                 <Route path="/contact" element={<ContactPage />} />
+                {/* Public, and in the document shell rather than the game one:
+                    it is a scrolling page a visitor reads to find out what the
+                    game is about, and `.screen` would pin it to 100dvh. */}
+                <Route path="/almanac" element={<AlmanacPage />} />
                 {/* Operator tools. SuperAdminRoute is presentational; the
                     server re-resolves the grant on every /api/admin and
                     /api/platform call and returns 403 to everyone else. */}

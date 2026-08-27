@@ -1,14 +1,15 @@
 /**
- * The almanac grid: 200 Singapore flowering plants, found and unfound.
+ * The almanac grid: the fifty Singapore plants of the almanac, found and
+ * unfound.
  *
  * Undiscovered species show a silhouette — the species is named, because an
  * almanac that tells you what to go and look for is the point, but the creature
  * behind it is not revealed until someone brings one in.
  *
- * The silhouette is drawn rather than loaded. Two hundred image requests for
- * art that is a single flat shape would be two hundred requests, and an SVG
- * takes the surrounding text colour, so the same component covers the dark
- * landing page and the light admin dashboard.
+ * The silhouette is drawn rather than loaded. One image request per card for
+ * art that is a single flat shape would be fifty requests for one picture, and
+ * an SVG takes the surrounding text colour, so the same component covers the
+ * dark almanac page and the light admin dashboard.
  */
 import type { AlmanacEntry } from '../../services/sproutApi';
 
@@ -38,8 +39,9 @@ export interface AlmanacGridProps {
   onSelect?: (entry: AlmanacEntry) => void;
   /** 'dark' for the landing page over the green field, 'light' for /admin. */
   tone?: 'dark' | 'light';
-  /** Rows visible before the grid scrolls inside itself. 200 cards down the
-   *  page buries everything under it; four rows is a window onto the list. */
+  /** Rows visible before the grid scrolls inside itself. A full grid part-way
+   *  down a longer page buries everything under it; a few rows is a window onto
+   *  the list. Omit it where the grid IS the page, as on /almanac. */
   visibleRows?: number;
 }
 

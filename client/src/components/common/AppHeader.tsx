@@ -15,36 +15,46 @@ interface NavItem {
 }
 
 /**
- * Three audiences, one list.
+ * Two navs, chosen by which shell is rendering.
  *
- *   visitor (signed out or unverified)
- *     open:    Home, Ranking, Contact
- *     greyed:  Scan, Archive, PVE Battle
- *   player
- *     open:    all six
- *   superadmin
- *     open:    all six, then a divider, then Admin, Studio, API Test,
- *              Ticket Manager
+ *   document pages (/, /almanac, /contact, the auth screens, 404)
+ *     Home, Almanac, Ranking, Contact
+ *   game pages (/scan, /archive, /battle, /leaderboard)
+ *     Scan, Archive, PVE Battle, Ranking
  *
- * `/` is both the public landing page and, once signed in, the home a player
- * returns to — the separate "Play" hub at `/home` is archived, so Scan is
- * reached from the nav directly rather than through an extra screen.
+ * It used to be one flat list shown everywhere, which meant a visitor reading
+ * the landing page saw three greyed-out game tabs they could not use, and a
+ * player mid-game carried Contact around with them. Splitting it lets each
+ * context show only what it is for — and it is what makes room for Almanac,
+ * which belongs to the public half.
  *
- * Ranking sits with the public three: the boards read without a session, and
- * the personal "where do I rank" half of that page is what needs an account.
+ * Both navs keep the operator group. An admin needs the tools from wherever
+ * they happen to be, and the divider is drawn before the first one rather than
+ * at a fixed index, so it appears only when the tools do.
  *
- * Order matters: everything a player uses comes first, then the operator tools
- * as a trailing group. The divider is drawn before the first tool rather than
- * hardcoded at an index, so it appears only when the tools do — a normal
- * player never sees a rule with nothing after it.
+ * No Home in the game nav: the brand mark is a link to `/` on every page, so
+ * the way back already exists and a second one would just cost a tab stop.
+ *
+ * Ranking is in both. The boards read without a session, so it is a public
+ * page, but it lives in the game shell — a signed-out visitor who follows
+ * Ranking from the landing page lands on the game nav. That is the one seam in
+ * this split, and it is preferred to giving one page a nav of its own.
  */
-const navItems: NavItem[] = [
+const documentNavItems: NavItem[] = [
   { to: '/', label: 'Home', requiresAuth: false },
+  { to: '/almanac', label: 'Almanac', requiresAuth: false },
+  { to: '/leaderboard', label: 'Ranking', requiresAuth: false },
+  { to: '/contact', label: 'Contact', requiresAuth: false },
+];
+
+const gameNavItems: NavItem[] = [
   { to: '/scan', label: 'Scan', requiresAuth: true },
   { to: '/archive', label: 'Archive', requiresAuth: true },
   { to: '/battle', label: 'PVE Battle', requiresAuth: true },
   { to: '/leaderboard', label: 'Ranking', requiresAuth: false },
-  { to: '/contact', label: 'Contact', requiresAuth: false },
+];
+
+const operatorNavItems: NavItem[] = [
   { to: '/admin', label: 'Admin', requiresAuth: true, requiresSuperAdmin: true },
   { to: '/studio', label: 'Studio', requiresAuth: true, requiresSuperAdmin: true },
   { to: '/test', label: 'API Test', requiresAuth: true, requiresSuperAdmin: true },
@@ -56,7 +66,19 @@ const navItems: NavItem[] = [
   },
 ];
 
-export default function AppHeader() {
+export type AppHeaderVariant = 'document' | 'game';
+
+export interface AppHeaderProps {
+  /**
+   * Which nav to show. Passed by the shell rather than read off the location:
+   * the shell already knows which kind of page it is wrapping, and deriving it
+   * from the pathname would mean a second list of routes to keep in step with
+   * the router.
+   */
+  variant?: AppHeaderVariant;
+}
+
+export default function AppHeader({ variant = 'document' }: AppHeaderProps = {}) {
   const { status, profile, firebaseUser, logout } = useAuth();
   const { isNavigationLocked } = useNavigationLock();
   const navigate = useNavigate();
@@ -76,9 +98,10 @@ export default function AppHeader() {
   // neutral pending state instead of the wrong one.
   const authPending = status === 'loading';
   const identity = profile?.displayName ?? firebaseUser?.email ?? 'Account';
-  const visibleNavItems = navItems.filter(
-    (item) => !item.requiresSuperAdmin || profile?.isSuperAdmin
-  );
+  const visibleNavItems = [
+    ...(variant === 'game' ? gameNavItems : documentNavItems),
+    ...operatorNavItems,
+  ].filter((item) => !item.requiresSuperAdmin || profile?.isSuperAdmin);
 
   async function handleLogout() {
     if (isNavigationLocked) return;

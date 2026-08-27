@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Search } from 'lucide-react';
 import BackButton from '../components/common/BackButton';
 import { Overlay } from '../components/common/Overlay';
@@ -391,6 +391,17 @@ export default function ArchivePage() {
         />
         <h1 className="font-pixel text-outline text-xl text-white sm:text-3xl">Archive</h1>
       </div>
+
+      {/* The way to the almanac from inside the game. It is not a game tab —
+          the nav here is the four boards — so the link lives next to the
+          collection it describes: this page answers "what have I got", the
+          almanac answers "what is there to get". */}
+      <p className="mt-2 text-center text-[11px] text-white/70">
+        <Link className="text-link" to="/almanac">
+          Browse the almanac
+        </Link>{' '}
+        to see which species are still unfound.
+      </p>
 
       {/* The removal dialog narrates its own busy state, so the banner stays
           the demo switch's alone. */}
