@@ -61,8 +61,14 @@ services:
       # delivering with no code change and nothing in the diff to explain it.
       - key: EMAIL_MODE
         value: resend
+      # Dashboard-valued rather than committed. This is a fork deployed to a
+      # personal Render account, and the addresses below are whoever owns THAT
+      # account — not the team's shared inbox, which no longer receives
+      # anything from this service. They are left out of git rather than
+      # hardcoded because a fork of a public repo is public, and an operator's
+      # personal address is not something to publish to set up a deploy.
       - key: EMAIL_FROM
-        value: hello.sprout.team@gmail.com
+        sync: false
       # Declared here, valued in the dashboard. Declaring a secret with
       # `sync: false` is not the same as omitting it: it records that the
       # service needs the variable — email.service.ts reads both — without the
@@ -82,30 +88,59 @@ services:
       #                                    gates /api/admin and /api/platform;
       #                                    fail-closed, so omitting it here
       #                                    locks every operator out on deploy.
+      #
+      # SUPER_ADMIN_EMAILS is the one that will lock you out if you get it
+      # wrong. It gates /api/admin and /api/platform and it fails closed, so a
+      # deploy carrying the previous owner's address means the person who
+      # deployed it is not an operator on their own service.
       - key: ADMIN_EMAIL
-        value: hello.sprout.team@gmail.com
+        sync: false
       - key: ADMIN_EMAILS
-        value: hello.sprout.team@gmail.com
+        sync: false
       - key: SUPER_ADMIN_EMAILS
-        value: hello.sprout.team@gmail.com
+        sync: false
       - key: SMTP_HOST
         value: smtp.gmail.com
       - key: SMTP_PORT
         value: "587"
       - key: SMTP_USER
-        value: hello.sprout.team@gmail.com
+        sync: false
       - key: SMTP_PASS
         sync: false
+      # The deployed frontend. Two jobs: it is where password-reset and
+      # verification links point, so a wrong value sends players nowhere.
       - key: FRONTEND_URL
-        sync: false
+        value: https://sprout-game.vercel.app
       # Was "true" while nothing read it. Now that it does, leaving it true
       # would serve every player a placeholder drawing instead of their plant.
+      # The five paid providers the scan pipeline calls. Declared here and
+      # valued in the dashboard, for the reason the email keys above are: this
+      # records that the service needs them without the values entering git.
+      #
+      # Omitting them entirely is worse than it looks. Nothing throws — every
+      # one of these has a documented mock path, so the service boots, answers
+      # its health check, and quietly hands every player the same hardcoded
+      # species and a placeholder drawing. See pipeline/stages/identify.ts's
+      # isMockIdentification and generate.ts's placeholder branch.
+      - key: PLANT_API_KEY
+        sync: false
+      - key: GEMINI_KEY
+        sync: false
+      - key: GEMMA_API_KEY
+        sync: false
+      - key: FLUX_API_KEY
+        sync: false
+      - key: WITHOUTBG_KEY
+        sync: false
       - key: USE_MOCK_APIS
         value: "false"
       - key: MIN_CONFIDENCE_THRESHOLD
         value: "0.70"
+      # The browser origin allowed to call this API. Not a secret, and getting
+      # it wrong is the failure that looks like "the site loads but every
+      # request fails" with nothing useful in the server log.
       - key: CORS_ORIGIN
-        sync: false
+        value: https://sprout-game.vercel.app
       - key: FIREBASE_SERVICE_ACCOUNT_JSON
         sync: false
       # Every scan writes its species sprite here. sprite-storage.ts throws
