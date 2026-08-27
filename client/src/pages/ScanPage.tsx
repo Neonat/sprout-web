@@ -401,7 +401,15 @@ export default function ScanPage() {
           if (event.event === 'complete') {
             const plant = event.finalPlant as { name?: string } | undefined;
             finalName = plant?.name ?? finalName;
-            finalSprite = `data:image/png;base64,${String(event.finalSpriteB64)}`;
+            /* Two shapes, because the server has two ways to finish. A run
+               that rendered sends the finished bytes; a run that reused the
+               species' published sprite sends that object's url instead, and
+               pulling its bytes through the API purely to re-encode them as
+               base64 would be a round trip for nothing. Both end up as an
+               <img src>, so the difference stops here. */
+            finalSprite = event.finalSpriteUrl
+              ? String(event.finalSpriteUrl)
+              : `data:image/png;base64,${String(event.finalSpriteB64)}`;
             savedOutcome = {
               saved: event.saved !== false,
               saveError: event.saveError ? String(event.saveError) : undefined,

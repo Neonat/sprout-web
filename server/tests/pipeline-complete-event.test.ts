@@ -18,6 +18,11 @@ const mockAuthAdmin = { verifyIdToken: jest.fn() };
 const mockIdentifyPlant = jest.fn();
 /** Species keys handed to sprite storage, in call order. */
 const mockSpriteSaves: string[] = [];
+/* Handles on the two paid hops the dex cache gate exists to skip. The rest of
+   the stages stay anonymous mocks — these are the ones a test needs to prove
+   were never reached. */
+const mockCraftPromptTiered = jest.fn();
+const mockGenerateSprite = jest.fn();
 
 jest.mock('../firebase', () => {
   const actual = jest.requireActual('../firebase');
@@ -30,15 +35,11 @@ jest.mock('../pipeline/stages/identify', () => {
 });
 
 jest.mock('../pipeline/stages/promptCraft', () => ({
-  craftPromptTiered: jest.fn().mockResolvedValue({ prompt: 'a cute fern', tier: 'gemini' }),
+  craftPromptTiered: mockCraftPromptTiered,
 }));
 
 jest.mock('../pipeline/stages/generate', () => ({
-  generateSprite: jest.fn().mockResolvedValue({
-    png: Buffer.from('raw-sprite'),
-    model: 'test-model',
-    fromModel: true,
-  }),
+  generateSprite: mockGenerateSprite,
 }));
 
 jest.mock('../pipeline/stages/removeBg', () => ({
@@ -142,6 +143,15 @@ beforeEach(async () => {
     taxonomy: { kingdom: 'Plantae', family: 'Polypodiaceae' },
   });
 
+  mockCraftPromptTiered.mockReset();
+  mockCraftPromptTiered.mockResolvedValue({ prompt: 'a cute fern', tier: 'gemini' });
+  mockGenerateSprite.mockReset();
+  mockGenerateSprite.mockResolvedValue({
+    png: Buffer.from('raw-sprite'),
+    model: 'test-model',
+    fromModel: true,
+  });
+
   mockSpriteSaves.length = 0;
   await clearFirestore();
 });
@@ -211,7 +221,12 @@ describe('pipeline complete event species scoping', () => {
     await runScan(SCANNER);
     await runScan(FINDER);
 
-    expect(mockSpriteSaves).toEqual(['fern', 'fern']);
+    /* One save, not two. The species is canonical across users exactly as
+       before — what changed is where that is decided. Storage used to be
+       asked on every scan and quietly decline the second write, after the
+       render had already been paid for; the dex cache gate now answers before
+       the first paid call, so the second scanner never reaches storage. */
+    expect(mockSpriteSaves).toEqual(['fern']);
   });
 
   /**
@@ -260,6 +275,150 @@ describe('pipeline complete event species scoping', () => {
     await runScan(SCANNER, { customName: 'Monstera deliciosa' });
     await runScan(FINDER, { customName: 'Monstera deliciosa' });
 
-    expect(mockSpriteSaves).toEqual(['monstera_deliciosa', 'monstera_deliciosa']);
+    /* One save, then a cache hit — and the hit is itself the proof. A typed
+       name that had been scoped per user would produce two different keys,
+       miss the cache and save a second object; sharing the canonical key is
+       exactly why the second scanner never reaches storage. */
+    expect(mockSpriteSaves).toEqual(['monstera_deliciosa']);
+    expect(mockSpriteSaves[0]).not.toContain('__u_');
+  });
+});
+
+/**
+ * The dex cache gate.
+ *
+ * The pipeline spec has always said "cache hit calls no generation provider",
+ * and until now nothing did: the only question ever asked about an
+ * already-known species was asked by persistScan, after prompt crafting,
+ * rendering, cutout, finishing and the judge had all been paid for. Storage
+ * then declined to write a second object and the render was discarded. The
+ * dedupe was real; the saving was not.
+ *
+ * These tests pin both halves — that a hit skips the paid hops, and that the
+ * two surfaces which legitimately need a fresh render still get one.
+ */
+describe('pipeline dex cache gate', () => {
+  const PUBLISHED = 'https://cdn.test/fern/v1.png';
+
+  it('reuses the published sprite and calls no generation provider', async () => {
+    await dexRepository.recordDiscovery('fern', FINDER, 'Fern', PUBLISHED);
+
+    const { frames } = await runScan(SCANNER);
+    const complete = completeFrame(frames);
+
+    expect(complete.spriteReused).toBe(true);
+    expect(complete.finalSpriteUrl).toBe(PUBLISHED);
+    // The generating path's field must be absent, not empty — the client picks
+    // its branch on the url being present.
+    expect(complete).not.toHaveProperty('finalSpriteB64');
+
+    expect(mockCraftPromptTiered).not.toHaveBeenCalled();
+    expect(mockGenerateSprite).not.toHaveBeenCalled();
+    expect(mockSpriteSaves).toHaveLength(0);
+
+    // A reused sprite is still a scan: the player gets their archive record
+    // and the species' discovery count moves.
+    expect(complete.saved).toBe(true);
+    expect(complete.avatarId).toBeTruthy();
+    expect((await dexRepository.get('fern'))?.discoveryCount).toBe(2);
+  });
+
+  it('files no candidate, because nothing new was drawn', async () => {
+    await dexRepository.recordDiscovery('fern', FINDER, 'Fern', PUBLISHED);
+
+    const complete = completeFrame((await runScan(SCANNER)).frames);
+
+    // Filing the incumbent back as a candidate would queue the published
+    // sprite to compete against itself in the dex gate.
+    expect(complete.candidate).toBeNull();
+  });
+
+  it('returns the currently published sprite, not the first one ever drawn', async () => {
+    // What the dex holds after a superadmin publishes a later candidate.
+    const laterCandidate = 'https://cdn.test/fern/v3.png';
+    await dexRepository.recordDiscovery('fern', FINDER, 'Fern', laterCandidate);
+
+    const complete = completeFrame((await runScan(SCANNER)).frames);
+
+    /* Deriving the object path from the species key would have answered
+       sprites/fern/v1.png here — art the archive and almanac no longer show.
+       The gate reads dex.spriteUrl precisely so it cannot drift from them. */
+    expect(complete.finalSpriteUrl).toBe(laterCandidate);
+  });
+
+  it('generates when the species is known but carries no sprite', async () => {
+    // A dex record written before the dex carried sprite urls at all.
+    await dexRepository.recordDiscovery('fern', FINDER, 'Fern', '');
+
+    const complete = completeFrame((await runScan(SCANNER)).frames);
+
+    expect(mockGenerateSprite).toHaveBeenCalled();
+    expect(complete.spriteReused).toBeUndefined();
+    expect(complete.finalSpriteB64).toBeTruthy();
+    expect(mockSpriteSaves).toEqual(['fern']);
+  });
+
+  it('generates for a species nobody has scanned', async () => {
+    const complete = completeFrame((await runScan(SCANNER)).frames);
+
+    expect(mockGenerateSprite).toHaveBeenCalled();
+    expect(complete.finalSpriteB64).toBeTruthy();
+  });
+
+  /**
+   * The studio's manual run exists to produce a NEW render for the dex gate to
+   * judge. If it took the cache too, the gate would have nothing to review and
+   * a bad first sprite could never be replaced — the cache would make itself
+   * permanent.
+   */
+  it('still generates for the studio run, so the dex gate keeps a candidate supply', async () => {
+    await dexRepository.recordDiscovery('fern', FINDER, 'Fern', PUBLISHED);
+
+    const { frames } = await runScan(SCANNER, { pauseAt2b: true });
+
+    expect(mockGenerateSprite).toHaveBeenCalled();
+    expect(frames.map((frame) => frame.event)).toContain(
+      'awaiting_stage2c_confirmation'
+    );
+  });
+
+  it('honours an explicit forceRegenerate from the game side', async () => {
+    await dexRepository.recordDiscovery('fern', FINDER, 'Fern', PUBLISHED);
+
+    const complete = completeFrame(
+      (await runScan(SCANNER, { forceRegenerate: true })).frames
+    );
+
+    expect(mockGenerateSprite).toHaveBeenCalled();
+    expect(complete.spriteReused).toBeUndefined();
+    expect(complete.finalSpriteB64).toBeTruthy();
+  });
+
+  /**
+   * Mock-mode scans are user-scoped (`fern__u_<hex uid>`) so two users'
+   * placeholder plants never share a sprite. The gate must key on exactly the
+   * same scoped key, or a rescan would miss its own cache — or worse, hit
+   * somebody else's.
+   */
+  it('scopes the lookup to the user when the identification is a placeholder', async () => {
+    delete process.env.PLANT_API_KEY;
+    mockIdentifyPlant.mockResolvedValue({
+      name: 'Fern',
+      probability: 0.92,
+      common_names: ['fern'],
+      taxonomy: { kingdom: 'Plantae', family: 'Polypodiaceae' },
+    });
+
+    // Another user's scoped record for the same species name must not match.
+    const otherKey = `fern__u_${Buffer.from(FINDER, 'utf8').toString('hex')}`;
+    await dexRepository.recordDiscovery(otherKey, FINDER, 'Fern', PUBLISHED);
+
+    const complete = completeFrame((await runScan(SCANNER)).frames);
+
+    expect(complete.spriteReused).toBeUndefined();
+    expect(mockGenerateSprite).toHaveBeenCalled();
+    expect(mockSpriteSaves).toEqual([
+      `fern__u_${Buffer.from(SCANNER, 'utf8').toString('hex')}`,
+    ]);
   });
 });

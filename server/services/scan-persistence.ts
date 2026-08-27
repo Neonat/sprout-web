@@ -40,6 +40,16 @@ export interface ScanPersistOptions {
   /** The pipeline's verdict on this render, recorded onto its candidate row so
    *  the dex gate can compare candidates without re-running the judge. */
   evaluation?: ScanEvaluation;
+  /** Set when this scan reused the species' already-published sprite instead
+   *  of rendering a new one (the dex cache hit in pipeline.routes.ts).
+   *
+   *  Two things are then deliberately skipped. The storage write, because the
+   *  object is already there and re-deriving its url from `v1` would hand back
+   *  the wrong art for a species whose gate has since published a later
+   *  candidate — this url IS the published reference. And candidate recording,
+   *  because nothing new was drawn: filing the bytes we just read back as a
+   *  fresh candidate would queue the incumbent sprite to compete with itself. */
+  reusedSpriteUrl?: string;
 }
 
 /**
@@ -174,6 +184,28 @@ const UNUSABLE_SPECIES_NAME_MESSAGE = 'That plant name could not be used to save
  */
 export function scopeSpeciesKeyToUser(speciesKey: string, userId: string): string {
   return `${speciesKey}__u_${Buffer.from(userId, 'utf8').toString('hex')}`;
+}
+
+/**
+ * The key a scan is filed under, canonical or user-scoped.
+ *
+ * Extracted because the pipeline now has to derive the same key BEFORE
+ * persistence, to answer "does this species already have a sprite?" — and two
+ * derivations of the key that names the dex document, the storage object, the
+ * archive de-duplication target and the stats hash would be exactly the kind of
+ * drift this module already guards against elsewhere.
+ *
+ * Null when the name reduces to nothing usable as a key, which is the same
+ * condition persistScan refuses on.
+ */
+export function resolveSpeciesKey(
+  speciesName: string,
+  userId: string,
+  identified: boolean
+): string | null {
+  const canonicalKey = sanitizeSpeciesKey(speciesName);
+  if (!canonicalKey) return null;
+  return identified ? canonicalKey : scopeSpeciesKeyToUser(canonicalKey, userId);
 }
 
 function toCandidateEvaluation(
@@ -321,7 +353,9 @@ export async function persistScan(
   userId: string,
   speciesName: string,
   speciesFamily: string | null,
-  png: Buffer,
+  /** The finished render. Null only on the reused-sprite path, where nothing
+   *  was drawn and neither the storage write nor candidate recording runs. */
+  png: Buffer | null,
   options: ScanPersistOptions
 ): Promise<ScanPersistResult> {
   const failure = (saveError: string): ScanPersistResult => ({
@@ -334,26 +368,33 @@ export async function persistScan(
   });
 
   try {
-    // sanitizeSpeciesKey lives inside this try, not above it: if speciesName
-    // were ever not a string, .toLowerCase() inside it would throw, and Section
-    // F's "never abort the run" guarantee must hold unconditionally — that has
-    // to come back as saved: false, not an uncaught exception out of
-    // runStage2cOnward. The empty-key behavior below is unchanged: it still
-    // returns before any dependency I/O runs.
-    const canonicalKey = sanitizeSpeciesKey(speciesName);
-    if (!canonicalKey) {
+    // resolveSpeciesKey lives inside this try, not above it: if speciesName
+    // were ever not a string, the .toLowerCase() inside sanitizeSpeciesKey
+    // would throw, and Section F's "never abort the run" guarantee must hold
+    // unconditionally — that has to come back as saved: false, not an uncaught
+    // exception out of runStage2cOnward. The empty-key behavior below is
+    // unchanged: it still returns before any dependency I/O runs.
+    const speciesKey = resolveSpeciesKey(speciesName, userId, options.identified);
+    if (!speciesKey) {
       return failure(UNUSABLE_SPECIES_NAME_MESSAGE);
     }
-    const speciesKey = options.identified
-      ? canonicalKey
-      : scopeSpeciesKeyToUser(canonicalKey, userId);
 
     // Pure computation, resolved ahead of the actual I/O calls so a bug here
     // is legible as its own thing rather than tangled up with the Firestore
     // write it happens to be constructed for.
     const stats = deriveSpeciesStats(speciesKey);
 
-    const stored = await dependencies.storage.save(speciesKey, png);
+    // A cache hit already knows the published url and must not touch storage;
+    // everything below still runs, because a reused sprite is still a scan:
+    // the discovery count rises and the player gets their archive record.
+    if (!options.reusedSpriteUrl && !png) {
+      // A programming error rather than a user-facing one, but Section F says
+      // this function never throws out into the run — so it reports instead.
+      throw new Error('persistScan needs either a rendered png or a reusedSpriteUrl');
+    }
+    const stored = options.reusedSpriteUrl
+      ? { url: options.reusedSpriteUrl, created: false, repaired: false }
+      : await dependencies.storage.save(speciesKey, png!);
     const spriteUrl = stored.url;
     // The sprite goes on the dex record too: it is canonical per species, and
     // the almanac needs it without reading any player's avatar document.
@@ -372,7 +413,7 @@ export async function persistScan(
     // for the studio's dex gate — its failure must degrade to "not reviewable",
     // never to saved: false.
     let candidate: ScanPersistResult['candidate'] = null;
-    if (options.identified) {
+    if (options.identified && !options.reusedSpriteUrl) {
       try {
         candidate = await recordCandidate(
           dependencies,
@@ -380,7 +421,7 @@ export async function persistScan(
           speciesName,
           userId,
           dex.firstDiscoveredBy,
-          png,
+          png!,
           stored,
           options
         );

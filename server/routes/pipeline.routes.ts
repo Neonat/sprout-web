@@ -38,7 +38,11 @@ import { serverEnv } from '../platform/env';
 import { logAdminEvent } from '../platform/adminStore';
 import { recordApiCall } from '../platform/metricsStore';
 import { CAPTURE_SOURCES, type CaptureSource } from '../data/capture-source';
-import { persistScan, type PlantDetails } from '../services/scan-persistence';
+import {
+  persistScan,
+  resolveSpeciesKey,
+  type PlantDetails,
+} from '../services/scan-persistence';
 import { resolveDiscovery } from '../services/discovery';
 import createFirebaseSpriteStorage from '../services/sprite-storage';
 import dexRepository from '../repositories/dex';
@@ -356,6 +360,141 @@ router.post('/run-stream', async (req: Request, res: Response) => {
       });
       res.end();
       return;
+    }
+
+    /*
+     * The dex cache gate — spec: "cache hit calls no generation provider".
+     *
+     * Until now the only question ever asked about an already-known species was
+     * asked by persistScan, AFTER prompt crafting, rendering, cutout, finishing
+     * and the judge had all been paid for. Storage then quietly declined to
+     * write a second object and the render was thrown away (or filed as a
+     * candidate). The dedupe was real; the saving was not.
+     *
+     * Asking here — the first moment the species is known, and before a single
+     * paid call — turns a rescan into one Firestore point read. The bytes never
+     * come through this server: the browser loads the same immutable object the
+     * archive and almanac already point at.
+     *
+     * Two deliberate bypasses:
+     *
+     *  - The studio's manual run (pauseAt2b !== false) always generates. That
+     *    run exists to produce a NEW render for the dex gate to judge, so a
+     *    cache hit would leave the gate with nothing to review and no way to
+     *    ever replace a bad first sprite.
+     *  - `forceRegenerate: true` says so explicitly, for the same reason from
+     *    the game side.
+     */
+    const speciesKey = resolveSpeciesKey(
+      identification.name,
+      req.user!.uid,
+      identifiedSpecies
+    );
+    const cacheEligible =
+      req.body.pauseAt2b === false && req.body.forceRegenerate !== true;
+
+    if (speciesKey && cacheEligible) {
+      const startCache = Date.now();
+      const publishedUrl = await lookupPublishedSprite(speciesKey);
+
+      if (publishedUrl) {
+        const latCache = Date.now() - startCache;
+
+        logAdminEvent(
+          'info',
+          'Dex cache',
+          `${identification.name}: already published — reused the dex sprite, skipped generation.`,
+          undefined,
+          latCache
+        );
+
+        sendEvent({
+          event: 'sprite_cache_hit',
+          step: '2a',
+          speciesKey,
+          spriteUrl: publishedUrl,
+          latencyMs: latCache,
+        });
+
+        const plant = assemblePlant(identification, publishedUrl);
+
+        sendEvent({
+          event: 'step_done',
+          step: '3',
+          title: '3. Plant Monster Assembly',
+          status: 'success',
+          icon: 'tick',
+          latencyMs: latCache,
+          details: `${identification.name} is already in the dex — reused its published sprite instead of generating a new one.`,
+          spriteReused: true,
+          plant,
+        });
+
+        // Same contract as the generating path: a scan whose stream died is a
+        // scan that never happened, so the discovery count must not move.
+        assertScannerPresent('persistence');
+        const persistence = await persistScan(
+          {
+            storage: createFirebaseSpriteStorage(),
+            dex: dexRepository,
+            candidates: dexCandidateRepository,
+            avatars: avatarRepository,
+            resolveDiscovery,
+          },
+          req.user!.uid,
+          identification.name,
+          identification.taxonomy?.family ?? null,
+          // No bytes exist on this path and none are needed: the object is
+          // already in the bucket and nothing new was drawn.
+          null,
+          {
+            identified: identifiedSpecies,
+            source: readCaptureSource(req.body),
+            details: identifiedSpecies
+              ? {
+                  description: identification.description,
+                  commonNames: identification.common_names,
+                  bestLightCondition: identification.best_light_condition,
+                  bestSoilType: identification.best_soil_type,
+                  bestWatering: identification.best_watering,
+                  toxicity: identification.toxicity,
+                  commonUses: identification.common_uses,
+                  confidence: identification.probability,
+                }
+              : undefined,
+            // No evaluation: nothing was rendered, so there is no new verdict
+            // to record. The incumbent sprite keeps the one it was judged on.
+            reusedSpriteUrl: publishedUrl,
+          }
+        );
+
+        logAdminEvent(
+          persistence.saved ? 'info' : 'error',
+          'Persist',
+          persistence.saved
+            ? `${identification.name}: rescan saved against the published sprite (no render).`
+            : `${identification.name}: save failed — the player was asked to rescan.`,
+          persistence.saved ? undefined : 'SAVE_FAILED'
+        );
+
+        sendEvent({
+          event: 'complete',
+          finalPlant: plant,
+          // A url, not base64 — the browser loads the same immutable, cached
+          // object the archive and almanac already point at.
+          finalSpriteUrl: publishedUrl,
+          totalTimeMs: lat1 + latCache,
+          avatarId: persistence.avatarId,
+          saved: persistence.saved,
+          saveError: persistence.saveError,
+          discovery: persistence.discovery,
+          candidate: persistence.candidate,
+          spriteReused: true,
+        });
+
+        res.end();
+        return;
+      }
     }
 
     // Step 2a: Prompt Crafting
@@ -711,6 +850,26 @@ router.post('/run-stage2c', requireSuperAdmin, async (req: Request, res: Respons
     res.end();
   }
 });
+
+/**
+ * The species' published sprite, or null to generate one.
+ *
+ * Reads `dex.spriteUrl` rather than deriving the storage path from the key,
+ * because they are not the same thing once the gate has published a later
+ * candidate: the record holds the CURRENT reference, `sprites/<key>/v1.png`
+ * holds the first one ever drawn. Returning v1 here would hand the scanner art
+ * the archive and almanac no longer show.
+ *
+ * The url is handed straight to the client and straight to the archive record.
+ * The bytes are never pulled through this server: it has nothing to do with
+ * them on a cache hit — no cutout, no palette pass, no judge — so fetching
+ * them would be a round trip whose only product is a base64 string the browser
+ * can get from the CDN itself.
+ */
+async function lookupPublishedSprite(speciesKey: string): Promise<string | null> {
+  const record = await dexRepository.get(speciesKey);
+  return record?.spriteUrl ? record.spriteUrl : null;
+}
 
 /**
  * Hops 2c–4, shared by both entry points.
