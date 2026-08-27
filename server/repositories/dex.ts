@@ -66,6 +66,21 @@ export const firestoreDexRepository: DexRepository = {
     return toDiscovery(speciesKey, snapshot.data() ?? {});
   },
 
+  async findFirstExisting(speciesKeys) {
+    // Distinct, non-empty, order preserved — getAll() rejects an empty ref
+    // list, and getAll() answers in the order asked, which is what makes
+    // "first that exists" mean "highest priority that exists".
+    const keys = [...new Set(speciesKeys.filter((k) => k))];
+    if (keys.length === 0) return null;
+
+    const db = getDb();
+    const snapshots = await db.getAll(...keys.map((key) => db.collection(COLLECTION).doc(key)));
+    for (const snapshot of snapshots) {
+      if (snapshot.exists) return toDiscovery(snapshot.id, snapshot.data() ?? {});
+    }
+    return null;
+  },
+
   async getSpriteUrls(speciesKeys) {
     const map = new Map<string, string>();
     // Distinct, non-empty keys only — getAll() rejects an empty ref list.

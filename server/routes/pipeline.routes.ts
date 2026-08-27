@@ -40,7 +40,7 @@ import { recordApiCall } from '../platform/metricsStore';
 import { CAPTURE_SOURCES, type CaptureSource } from '../data/capture-source';
 import {
   persistScan,
-  resolveSpeciesKey,
+  speciesKeyCandidates,
   type PlantDetails,
 } from '../services/scan-persistence';
 import { resolveDiscovery } from '../services/discovery';
@@ -385,19 +385,21 @@ router.post('/run-stream', async (req: Request, res: Response) => {
      *  - `forceRegenerate: true` says so explicitly, for the same reason from
      *    the game side.
      */
-    const speciesKey = resolveSpeciesKey(
+    const candidateKeys = speciesKeyCandidates(
       identification.name,
       req.user!.uid,
-      identifiedSpecies
+      identifiedSpecies,
+      identification.gbif_id
     );
     const cacheEligible =
       req.body.pauseAt2b === false && req.body.forceRegenerate !== true;
 
-    if (speciesKey && cacheEligible) {
+    if (candidateKeys.length > 0 && cacheEligible) {
       const startCache = Date.now();
-      const publishedUrl = await lookupPublishedSprite(speciesKey);
+      const published = await lookupPublishedSprite(candidateKeys);
 
-      if (publishedUrl) {
+      if (published) {
+        const { speciesKey, spriteUrl: publishedUrl } = published;
         const latCache = Date.now() - startCache;
 
         logAdminEvent(
@@ -465,6 +467,7 @@ router.post('/run-stream', async (req: Request, res: Response) => {
             // No evaluation: nothing was rendered, so there is no new verdict
             // to record. The incumbent sprite keeps the one it was judged on.
             reusedSpriteUrl: publishedUrl,
+            gbifId: identification.gbif_id,
           }
         );
 
@@ -866,9 +869,16 @@ router.post('/run-stage2c', requireSuperAdmin, async (req: Request, res: Respons
  * them would be a round trip whose only product is a base64 string the browser
  * can get from the CDN itself.
  */
-async function lookupPublishedSprite(speciesKey: string): Promise<string | null> {
-  const record = await dexRepository.get(speciesKey);
-  return record?.spriteUrl ? record.spriteUrl : null;
+async function lookupPublishedSprite(
+  candidateKeys: string[]
+): Promise<{ speciesKey: string; spriteUrl: string } | null> {
+  // The whole chain, not just the preferred key: a species discovered before
+  // taxon keys existed is still filed under its name, and a rescan that only
+  // asked about `gbif_<id>` would miss its own cache and pay to redraw a
+  // sprite that is already published.
+  const record = await dexRepository.findFirstExisting(candidateKeys);
+  if (!record?.spriteUrl) return null;
+  return { speciesKey: record.speciesKey, spriteUrl: record.spriteUrl };
 }
 
 /**
@@ -881,7 +891,13 @@ async function lookupPublishedSprite(speciesKey: string): Promise<string | null>
 async function runStage2cOnward(
   sendEvent: (data: unknown) => void,
   rawSpriteBuffer: Buffer,
-  identification: { name: string; taxonomy?: Record<string, string> },
+  identification: {
+    name: string;
+    taxonomy?: Record<string, string>;
+    /** Absent on the post-gate leg, which receives a name and nothing else —
+     *  so that leg keys on the name, exactly as it always did. */
+    gbif_id?: number | null;
+  },
   deadline: ReturnType<typeof createDeadline>,
   userId: string,
   /** False when identification.name is a placeholder — see persistScan. */
@@ -1090,6 +1106,7 @@ async function runStage2cOnward(
          name is a stand-in, so care notes attached to it would describe a
          plant the player did not scan — worse than showing nothing. */
       details: identifiedSpecies ? details : undefined,
+      gbifId: identification.gbif_id,
       // Recorded onto the candidate row so the dex gate can rank renders
       // without re-running the judge.
       evaluation: {

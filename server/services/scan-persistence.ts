@@ -50,6 +50,9 @@ export interface ScanPersistOptions {
    *  because nothing new was drawn: filing the bytes we just read back as a
    *  fresh candidate would queue the incumbent sprite to compete with itself. */
   reusedSpriteUrl?: string;
+  /** GBIF's taxon id for the identification, when the identifier supplied one.
+   *  Preferred over the species name for keying — see speciesKeyCandidates. */
+  gbifId?: number | null;
 }
 
 /**
@@ -186,26 +189,106 @@ export function scopeSpeciesKeyToUser(speciesKey: string, userId: string): strin
   return `${speciesKey}__u_${Buffer.from(userId, 'utf8').toString('hex')}`;
 }
 
+/** Prefix for a key derived from a provider taxon id rather than a name. */
+export const TAXON_KEY_PREFIX = 'gbif_';
+
+/** The key a GBIF taxon is filed under. Single underscore by construction, so
+ *  it can never be mistaken for the `__u_` user scope separator. */
+export function taxonSpeciesKey(gbifId: number): string {
+  return `${TAXON_KEY_PREFIX}${gbifId}`;
+}
+
 /**
- * The key a scan is filed under, canonical or user-scoped.
+ * The key a scientific binomial reduces to, with authority and infraspecific
+ * rank dropped — `Fagraea fragrans Roxb.` and
+ * `Avicennia marina (Forsk.) Vierh. ssp. marina` to `fagraea_fragrans` and
+ * `avicennia_marina`. Null for anything that is not written like a binomial.
  *
- * Extracted because the pipeline now has to derive the same key BEFORE
- * persistence, to answer "does this species already have a sprite?" — and two
- * derivations of the key that names the dex document, the storage object, the
- * archive de-duplication target and the stats hash would be exactly the kind of
- * drift this module already guards against elsewhere.
+ * Deliberately NOT data/almanac's almanacIdForSpecies, which looks like it
+ * does this job and does a different one. That function answers "which of the
+ * almanac's 200 species might this identification be?", so it lower-cases
+ * before testing in order to tolerate whatever capitalisation an identifier
+ * returns — which makes it read `Unknown Plant Species` as the binomial
+ * `unknown-plant`, quietly truncating a placeholder into a species. Harmless
+ * when the answer is only used to look up a fixed list that contains no such
+ * entry; not harmless at all when the answer NAMES THE RECORD.
  *
- * Null when the name reduces to nothing usable as a key, which is the same
- * condition persistScan refuses on.
+ * The rule here is the written form: a binomial is `Genus epithet`, so the
+ * genus must be capitalised and the epithet must not. That is exactly what
+ * separates "Fagraea fragrans Roxb." from "Unknown Plant Species" — both are
+ * three words, only one of them is a species. A name that fails it loses
+ * nothing: it falls through to the raw sanitised key, which is where it would
+ * have been filed anyway.
  */
-export function resolveSpeciesKey(
+export function binomialKeyFor(speciesName: string): string | null {
+  const words = speciesName
+    .trim()
+    .split(/\s+/)
+    .filter((word) => word && word !== '×' && word !== 'x');
+  if (words.length < 2) return null;
+
+  const [genus, epithet] = words;
+  if (!/^[A-Z][a-z]+$/.test(genus)) return null;
+  if (!/^[a-z][a-z-]+$/.test(epithet)) return null;
+
+  return sanitizeSpeciesKey(`${genus} ${epithet}`);
+}
+
+/**
+ * Every key this scan's species could be filed under, best first.
+ *
+ * The species key names the dex document, the sprite object, the archive
+ * de-duplication target and the stats hash, and it used to be derived from
+ * whatever string the identifier happened to return. That is not stable:
+ * Plant.id answers "Fagraea fragrans", "Fagraea fragrans Roxb." and — once a
+ * genus is revised — "Cyrtophyllum fragrans" for one plant, and each spelling
+ * became its own species with its own sprite, stats and first discoverer.
+ *
+ * The chain, in order:
+ *
+ *  1. `gbif_<id>`, when the identifier gave a taxon id. Exact rather than
+ *     heuristic: the id does not move when the authority, the rank or the
+ *     accepted genus does, so it is the only one of the three that survives a
+ *     synonym.
+ *  2. The binomial the name reduces to — authority and infraspecific rank
+ *     dropped. Covers a real identification GBIF does not carry, and a name
+ *     the player typed that happens to be a binomial.
+ *  3. The raw sanitised name, which is what every key written before this
+ *     existed looks like, and the only option for a name that is not a
+ *     binomial at all ("Mystery Fern").
+ *
+ * Callers resolve a WRITE key by taking the first entry that already has a dex
+ * record, falling back to the first entry outright. That is what keeps this
+ * from forking every existing species on its next scan: a species filed under
+ * `fagraea_fragrans_roxb` stays there and keeps its discovery count and its
+ * first discoverer, rather than starting again under a taxon key.
+ *
+ * Empty when the name yields nothing usable as a key.
+ */
+export function speciesKeyCandidates(
   speciesName: string,
   userId: string,
-  identified: boolean
-): string | null {
-  const canonicalKey = sanitizeSpeciesKey(speciesName);
-  if (!canonicalKey) return null;
-  return identified ? canonicalKey : scopeSpeciesKeyToUser(canonicalKey, userId);
+  identified: boolean,
+  gbifId?: number | null
+): string[] {
+  const keys: string[] = [];
+
+  // Never for a placeholder: a mock or unnamed scan must not claim a real
+  // taxon's key, which is the one key guaranteed to be shared across users.
+  if (identified && typeof gbifId === 'number' && Number.isSafeInteger(gbifId) && gbifId > 0) {
+    keys.push(taxonSpeciesKey(gbifId));
+  }
+
+  const binomial = binomialKeyFor(speciesName);
+  if (binomial) keys.push(binomial);
+
+  const rawKey = sanitizeSpeciesKey(speciesName);
+  if (rawKey) keys.push(rawKey);
+
+  const ordered = [...new Set(keys.filter((key) => key))];
+  return identified
+    ? ordered
+    : ordered.map((key) => scopeSpeciesKeyToUser(key, userId));
 }
 
 function toCandidateEvaluation(
@@ -368,16 +451,36 @@ export async function persistScan(
   });
 
   try {
-    // resolveSpeciesKey lives inside this try, not above it: if speciesName
-    // were ever not a string, the .toLowerCase() inside sanitizeSpeciesKey
-    // would throw, and Section F's "never abort the run" guarantee must hold
+    // Key derivation lives inside this try, not above it: if speciesName were
+    // ever not a string, the .toLowerCase() inside sanitizeSpeciesKey would
+    // throw, and Section F's "never abort the run" guarantee must hold
     // unconditionally — that has to come back as saved: false, not an uncaught
     // exception out of runStage2cOnward. The empty-key behavior below is
     // unchanged: it still returns before any dependency I/O runs.
-    const speciesKey = resolveSpeciesKey(speciesName, userId, options.identified);
-    if (!speciesKey) {
+    const candidateKeys = speciesKeyCandidates(
+      speciesName,
+      userId,
+      options.identified,
+      options.gbifId
+    );
+    if (candidateKeys.length === 0) {
       return failure(UNUSABLE_SPECIES_NAME_MESSAGE);
     }
+
+    /* Write where the species already lives, not where it would be filed
+       today. Without this every species discovered before taxon keys existed
+       would fork on its next scan: a new document under `gbif_<id>` with a
+       discovery count of 1 and this scanner as its first discoverer, while the
+       real record kept the history under its name-derived key — and a second
+       sprite object to go with it. One batched read buys the continuity.
+
+       Skipped when there is only one candidate, where the answer cannot
+       differ and the read would be pure cost. */
+    const existing =
+      candidateKeys.length === 1
+        ? null
+        : await dependencies.dex.findFirstExisting(candidateKeys);
+    const speciesKey = existing?.speciesKey ?? candidateKeys[0];
 
     // Pure computation, resolved ahead of the actual I/O calls so a bug here
     // is legible as its own thing rather than tangled up with the Firestore

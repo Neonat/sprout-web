@@ -28,6 +28,17 @@ export interface DexRepository {
     forceSpriteUrl?: boolean
   ): Promise<DexDiscovery>;
   get(speciesKey: string): Promise<DexDiscovery | null>;
+  /** The first of `speciesKeys` that has a record, in the order given, in one
+   *  batched read.
+   *
+   *  A species can be addressed by more than one key: the taxon-id key it
+   *  would be filed under today, and the name-derived keys anything scanned
+   *  before that change is still filed under. A scan has to find its existing
+   *  record wherever it actually lives — writing to the preferred key while an
+   *  older one holds the discovery count and the first discoverer would fork
+   *  the species rather than move it. Order is priority, not preference of
+   *  storage: the caller lists the newest scheme first. */
+  findFirstExisting(speciesKeys: string[]): Promise<DexDiscovery | null>;
   /** Current sprite url per species key, for a set of keys, in one batched
    *  read. Keys with no record (or an empty url) are simply absent from the
    *  map. Used by the archive to overlay the currently-published sprite onto a

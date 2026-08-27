@@ -4,6 +4,17 @@ export interface IdentificationResult {
   probability: number;
   common_names: string[];
   taxonomy: Record<string, string>;
+  /**
+   * GBIF's numeric taxon id for the match, when Plant.id supplies one.
+   *
+   * Requested in the details list below since this pipeline was written, and
+   * discarded on the way out until now. It is the only stable thing in the
+   * response: `name` arrives as "Fagraea fragrans", "Fagraea fragrans Roxb."
+   * or "Cyrtophyllum fragrans" for one plant depending on the photo, and the
+   * species key was derived from that string. The id does not move when the
+   * authority, the rank or the accepted genus does.
+   */
+  gbif_id?: number | null;
   description?: string;
   best_light_condition?: string;
   best_soil_type?: string;
@@ -102,11 +113,17 @@ export async function identifyPlant(
     const top = suggestions[0];
     const details = top.details || {};
 
+    // Plant.id omits the field entirely for a taxon GBIF does not carry, and
+    // has been seen to answer null — both mean "no stable id", which the key
+    // resolver handles by falling back to the name.
+    const gbifId = Number(details.gbif_id);
+
     return {
       name: top.name || "Unknown Plant",
       probability: top.probability || 0,
       common_names: details.common_names || [],
       taxonomy: details.taxonomy || {},
+      gbif_id: Number.isSafeInteger(gbifId) && gbifId > 0 ? gbifId : null,
       description: details.description?.value || details.description || "",
       best_light_condition: details.best_light_condition || "",
       best_soil_type: details.best_soil_type || "",

@@ -1,6 +1,9 @@
 import {
+  binomialKeyFor,
   persistScan,
   scopeSpeciesKeyToUser,
+  speciesKeyCandidates,
+  taxonSpeciesKey,
   type ScanPersistenceDependencies,
 } from '../services/scan-persistence';
 import type { AvatarRecord } from '../models/avatar';
@@ -36,6 +39,9 @@ function deps(overrides: Partial<ScanPersistenceDependencies> = {}): ScanPersist
     dex: {
       recordDiscovery: jest.fn().mockResolvedValue(DEX),
       get: jest.fn(),
+      // No pre-existing record by default, so the write key is the preferred
+      // candidate — the behaviour every test here was written against.
+      findFirstExisting: jest.fn().mockResolvedValue(null),
       getSpriteUrls: jest.fn().mockResolvedValue(new Map()),
       list: jest.fn(),
     },
@@ -108,6 +114,7 @@ describe('persistScan', () => {
         recordDiscovery: jest.fn().mockRejectedValue(new Error('dex write conflict')),
         getSpriteUrls: jest.fn().mockResolvedValue(new Map()),
         get: jest.fn(),
+        findFirstExisting: jest.fn().mockResolvedValue(null),
         list: jest.fn(),
       },
     });
@@ -434,5 +441,163 @@ describe('scopeSpeciesKeyToUser', () => {
     expect(scopeSpeciesKeyToUser('fern', 'AbC')).not.toBe(
       scopeSpeciesKeyToUser('fern', 'aBc')
     );
+  });
+});
+
+/**
+ * Species keying.
+ *
+ * The key names the dex document, the sprite object, the archive
+ * de-duplication target and the stats hash, and it used to be
+ * sanitizeSpeciesKey(whatever string Plant.id returned). That string is not
+ * stable — the same plant comes back as "Fagraea fragrans", "Fagraea fragrans
+ * Roxb." or, after a genus revision, "Cyrtophyllum fragrans" — so one species
+ * became several, each with its own sprite, stats and first discoverer.
+ */
+describe('binomialKeyFor', () => {
+  it.each([
+    ['Fagraea fragrans Roxb.', 'fagraea_fragrans'],
+    ['Fagraea fragrans', 'fagraea_fragrans'],
+    ['Avicennia marina (Forsk.) Vierh. ssp. marina', 'avicennia_marina'],
+    ['Lantana camara L.', 'lantana_camara'],
+  ])('reduces %s to its binomial', (name, expected) => {
+    expect(binomialKeyFor(name)).toBe(expected);
+  });
+
+  /**
+   * The reason this is not data/almanac's almanacIdForSpecies, which reads
+   * "Unknown Plant Species" as the binomial "unknown-plant". Truncating a
+   * placeholder is harmless when the answer only looks up a fixed list; it is
+   * not harmless when the answer names the record.
+   */
+  it.each([
+    'Unknown Plant Species',
+    'Mystery Fern',
+    'Rose',
+    'Plant Monster',
+    '12345',
+    '',
+  ])('refuses to reduce %p', (name) => {
+    expect(binomialKeyFor(name)).toBeNull();
+  });
+});
+
+describe('speciesKeyCandidates', () => {
+  it('prefers the taxon id, then the binomial, then the raw name', () => {
+    expect(speciesKeyCandidates('Fagraea fragrans Roxb.', 'user-a', true, 5414325)).toEqual([
+      'gbif_5414325',
+      'fagraea_fragrans',
+      'fagraea_fragrans_roxb',
+    ]);
+  });
+
+  /* The whole point: two spellings of one plant agree on their first choice,
+     so they file under one key however the identifier phrased itself. */
+  it('agrees across spellings of the same taxon', () => {
+    const withAuthority = speciesKeyCandidates('Fagraea fragrans Roxb.', 'user-a', true, 5414325);
+    const withoutAuthority = speciesKeyCandidates('Fagraea fragrans', 'user-a', true, 5414325);
+    // ...and across a genus revision, which no amount of string reduction can
+    // reconcile: these two names share no word at all.
+    const renamed = speciesKeyCandidates('Cyrtophyllum fragrans', 'user-a', true, 5414325);
+
+    expect(withAuthority[0]).toBe(withoutAuthority[0]);
+    expect(renamed[0]).toBe(withAuthority[0]);
+  });
+
+  it('falls back to the binomial when the identifier gave no taxon id', () => {
+    expect(speciesKeyCandidates('Fagraea fragrans Roxb.', 'user-a', true, null)).toEqual([
+      'fagraea_fragrans',
+      'fagraea_fragrans_roxb',
+    ]);
+  });
+
+  it('collapses to one candidate when the name is already the binomial', () => {
+    expect(speciesKeyCandidates('Fern', 'user-a', true, null)).toEqual(['fern']);
+  });
+
+  it('never claims a taxon key for a placeholder identification', () => {
+    const keys = speciesKeyCandidates('Fern', 'user-a', false, 5414325);
+
+    expect(keys.every((key) => !key.startsWith(taxonSpeciesKey(5414325)))).toBe(true);
+    expect(keys).toEqual([scopeSpeciesKeyToUser('fern', 'user-a')]);
+  });
+
+  it('scopes every candidate to the user when unidentified', () => {
+    const keys = speciesKeyCandidates('Fagraea fragrans Roxb.', 'user-a', false, null);
+
+    expect(keys).toEqual([
+      scopeSpeciesKeyToUser('fagraea_fragrans', 'user-a'),
+      scopeSpeciesKeyToUser('fagraea_fragrans_roxb', 'user-a'),
+    ]);
+  });
+
+  it('yields nothing for a name with no usable characters', () => {
+    expect(speciesKeyCandidates('   ', 'user-a', true, null)).toEqual([]);
+  });
+});
+
+describe('persistScan species keying', () => {
+  const IDENTIFIED_WITH_TAXON = { identified: true, source: 'mobile' as const, gbifId: 5414325 };
+
+  it('files a new species under its taxon key', async () => {
+    const dependencies = deps();
+
+    await persistScan(
+      dependencies,
+      'user-a',
+      'Fagraea fragrans Roxb.',
+      null,
+      PNG,
+      IDENTIFIED_WITH_TAXON
+    );
+
+    expect(dependencies.storage.save).toHaveBeenCalledWith('gbif_5414325', PNG);
+  });
+
+  /**
+   * The migration hazard this chain exists for. Everything discovered before
+   * taxon keys is filed under a name. If a rescan simply took its preferred
+   * key it would create a second document with a count of 1 and the rescanner
+   * as first discoverer, orphaning the real record and its sprite.
+   */
+  it('stays on the key the species already lives under', async () => {
+    const legacy = {
+      speciesKey: 'fagraea_fragrans_roxb',
+      speciesName: 'Fagraea fragrans Roxb.',
+      firstDiscoveredBy: 'user-first',
+      firstDiscoveredAt: '2026-01-01T00:00:00.000Z',
+      discoveryCount: 4,
+      spriteUrl: 'https://cdn.test/legacy.png',
+    };
+    const dependencies = deps();
+    (dependencies.dex.findFirstExisting as jest.Mock).mockResolvedValue(legacy);
+
+    await persistScan(
+      dependencies,
+      'user-b',
+      'Fagraea fragrans Roxb.',
+      null,
+      PNG,
+      IDENTIFIED_WITH_TAXON
+    );
+
+    expect(dependencies.dex.findFirstExisting).toHaveBeenCalledWith([
+      'gbif_5414325',
+      'fagraea_fragrans',
+      'fagraea_fragrans_roxb',
+    ]);
+    expect(dependencies.storage.save).toHaveBeenCalledWith('fagraea_fragrans_roxb', PNG);
+  });
+
+  it('skips the lookup entirely when only one key is possible', async () => {
+    const dependencies = deps();
+
+    await persistScan(dependencies, 'user-a', 'Fern', null, PNG, {
+      identified: true,
+      source: 'mobile',
+    });
+
+    expect(dependencies.dex.findFirstExisting).not.toHaveBeenCalled();
+    expect(dependencies.storage.save).toHaveBeenCalledWith('fern', PNG);
   });
 });

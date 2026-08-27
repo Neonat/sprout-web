@@ -422,3 +422,116 @@ describe('pipeline dex cache gate', () => {
     ]);
   });
 });
+
+/**
+ * Species keying at the wire.
+ *
+ * The unit tests pin the key chain; these pin what it means for a player. Two
+ * photos of one tembusu, identified under two different names, must produce
+ * one creature — and a species discovered before taxon keys existed must not
+ * quietly restart under a new one.
+ */
+describe('pipeline species keying', () => {
+  const TEMBUSU_GBIF = 5414325;
+
+  function identifyAs(name: string, gbifId: number | null = TEMBUSU_GBIF) {
+    mockIdentifyPlant.mockResolvedValue({
+      name,
+      probability: 0.93,
+      common_names: ['tembusu'],
+      taxonomy: { kingdom: 'Plantae', family: 'Gentianaceae' },
+      gbif_id: gbifId,
+    });
+  }
+
+  it('files two spellings of one taxon under a single key', async () => {
+    identifyAs('Fagraea fragrans Roxb.');
+    await runScan(SCANNER);
+
+    /* Not a variant spelling but a genus revision — these two names share no
+       word at all, so nothing derived from the string could reconcile them.
+       The taxon id does. */
+    identifyAs('Cyrtophyllum fragrans');
+    const complete = completeFrame((await runScan(FINDER)).frames);
+
+    expect(mockSpriteSaves).toEqual([`gbif_${TEMBUSU_GBIF}`]);
+    expect(complete.spriteReused).toBe(true);
+    expect((await dexRepository.get(`gbif_${TEMBUSU_GBIF}`))?.discoveryCount).toBe(2);
+  });
+
+  it('reuses a species already filed under its name instead of forking it', async () => {
+    const legacyUrl = 'https://cdn.test/fagraea_fragrans_roxb.png';
+    await dexRepository.recordDiscovery(
+      'fagraea_fragrans_roxb',
+      FINDER,
+      'Fagraea fragrans Roxb.',
+      legacyUrl
+    );
+
+    identifyAs('Fagraea fragrans Roxb.');
+    const complete = completeFrame((await runScan(SCANNER)).frames);
+
+    expect(complete.spriteReused).toBe(true);
+    expect(complete.finalSpriteUrl).toBe(legacyUrl);
+    // The record stayed put: no second document, and the count and the first
+    // discoverer are still the ones the species already had.
+    expect(await dexRepository.get(`gbif_${TEMBUSU_GBIF}`)).toBeNull();
+    const legacy = await dexRepository.get('fagraea_fragrans_roxb');
+    expect(legacy?.discoveryCount).toBe(2);
+    expect(legacy?.firstDiscoveredBy).toBe(FINDER);
+  });
+
+  it('generates into the legacy key when the old record carries no sprite', async () => {
+    await dexRepository.recordDiscovery(
+      'fagraea_fragrans_roxb',
+      FINDER,
+      'Fagraea fragrans Roxb.',
+      ''
+    );
+
+    identifyAs('Fagraea fragrans Roxb.');
+    await runScan(SCANNER);
+
+    // Generated, because there was no sprite to reuse — but written back to
+    // where the species lives, not to the key it would be filed under today.
+    expect(mockGenerateSprite).toHaveBeenCalled();
+    expect(mockSpriteSaves).toEqual(['fagraea_fragrans_roxb']);
+    expect(await dexRepository.get(`gbif_${TEMBUSU_GBIF}`)).toBeNull();
+  });
+
+  /**
+   * The limit of the chain, asserted so nobody mistakes it for covered.
+   *
+   * A legacy record can only be found by a scan that reproduces the spelling
+   * it was filed under. "Fagraea fragrans" cannot derive
+   * "fagraea_fragrans_roxb" — the authority is information this scan does not
+   * have — so the species forks: the old document keeps its history and a new
+   * one starts under the taxon key.
+   *
+   * Nothing in the key chain can close this. Merging pre-existing variant
+   * documents needs a migration that reads them all and rewrites the losers,
+   * which is a destructive cross-collection operation (dex, storage objects,
+   * dex_candidates) and belongs in its own script, not in a scan.
+   */
+  it('cannot find a legacy record filed under a spelling this scan will not produce', async () => {
+    await dexRepository.recordDiscovery(
+      'fagraea_fragrans_roxb',
+      FINDER,
+      'Fagraea fragrans Roxb.',
+      'https://cdn.test/fagraea_fragrans_roxb.png'
+    );
+
+    identifyAs('Fagraea fragrans');
+    await runScan(SCANNER);
+
+    expect(mockSpriteSaves).toEqual([`gbif_${TEMBUSU_GBIF}`]);
+    expect((await dexRepository.get('fagraea_fragrans_roxb'))?.discoveryCount).toBe(1);
+  });
+
+  it('keys on the binomial when the identifier supplies no taxon id', async () => {
+    identifyAs('Fagraea fragrans Roxb.', null);
+    await runScan(SCANNER);
+
+    expect(mockSpriteSaves).toEqual(['fagraea_fragrans']);
+  });
+});
