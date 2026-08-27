@@ -111,10 +111,10 @@ describe('admin almanac', () => {
       .set('Authorization', asAdmin());
 
     expect(response.status).toBe(200);
-    expect(response.body.total).toBe(200);
-    expect(response.body.species).toHaveLength(200);
+    expect(response.body.total).toBe(50);
+    expect(response.body.species).toHaveLength(50);
     // Sprite and stats, not the finder: uid-to-name resolution is per species
-    // and the admin view lists all 200, so it stays a per-card lookup.
+    // and the admin view lists all 50, so it stays a per-card lookup.
     expect(response.body.species[0]).toHaveProperty('spriteUrl');
     expect(response.body.species[0]).toHaveProperty('stats');
     expect(response.body.offTaxonomy).toEqual([]);

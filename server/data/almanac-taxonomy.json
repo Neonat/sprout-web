@@ -1,1802 +1,502 @@
 [
   {
-    "speciesName": "Acanthus ilicifolius",
-    "family": "Acanthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "acanthus-ilicifolius",
-    "commonName": "Sea holly"
-  },
-  {
-    "speciesName": "Sesuvium portulacastrum",
-    "family": "Aizoaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "sesuvium-portulacastrum",
-    "commonName": "Sea purslane"
-  },
-  {
-    "speciesName": "Allmania nodiflora",
-    "family": "Amaranthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "allmania-nodiflora",
-    "commonName": null
-  },
-  {
-    "speciesName": "Zephyranthes rosea",
-    "family": "Amaryllidaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "zephyranthes-rosea",
-    "commonName": "Pink rain lily"
-  },
-  {
-    "speciesName": "Buchanania arborescens",
-    "family": "Anacardiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "buchanania-arborescens",
-    "commonName": null
-  },
-  {
-    "speciesName": "Anisophyllea disticha",
-    "family": "Anisophyllaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "anisophyllea-disticha",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cyathocalyx ramuliflorus",
-    "family": "Annonaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "cyathocalyx-ramuliflorus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Centella asiatica",
-    "family": "Apiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "centella-asiatica",
-    "commonName": "Pegaga"
-  },
-  {
-    "speciesName": "Alstonia angustifolia",
-    "family": "Apocynaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "alstonia-angustifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ilex cymosa",
-    "family": "Aquifoliaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "ilex-cymosa",
-    "commonName": null
-  },
-  {
-    "speciesName": "Aglaonema simplex",
-    "family": "Araceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "aglaonema-simplex",
-    "commonName": null
-  },
-  {
-    "speciesName": "Arthrophyllum diversifolium",
-    "family": "Araliaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "arthrophyllum-diversifolium",
-    "commonName": null
-  },
-  {
-    "speciesName": "Caryota mitis",
-    "family": "Arecaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "caryota-mitis",
-    "commonName": "Fishtail palm"
-  },
-  {
-    "speciesName": "Blumea riparia",
-    "family": "Asteraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "blumea-riparia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Hydrocera triflora",
-    "family": "Balsaminaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "hydrocera-triflora",
-    "commonName": null
-  },
-  {
-    "speciesName": "Jacaranda obtusifolia",
-    "family": "Bignoniaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "tree",
-    "id": "jacaranda-obtusifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ploiarium alternifolium",
-    "family": "Bonnetiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "ploiarium-alternifolium",
-    "commonName": null
-  },
-  {
-    "speciesName": "Carmona retusa",
-    "family": "Boraginaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "carmona-retusa",
-    "commonName": "Fukien tea"
-  },
-  {
-    "speciesName": "Rorippa heterophylla",
-    "family": "Brassicaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "rorippa-heterophylla",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ananas comosus",
-    "family": "Bromeliaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "ananas-comosus",
-    "commonName": "Pineapple"
-  },
-  {
-    "speciesName": "Burmannia coelestis",
-    "family": "Burmanniaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "burmannia-coelestis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Canarium littorale",
-    "family": "Burseraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "canarium-littorale",
-    "commonName": null
-  },
-  {
-    "speciesName": "Lobelia zeylanica",
-    "family": "Campanulaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "lobelia-zeylanica",
-    "commonName": null
-  },
-  {
-    "speciesName": "Gironniera nervosa",
-    "family": "Cannabaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "gironniera-nervosa",
-    "commonName": null
-  },
-  {
-    "speciesName": "Canna indica",
-    "family": "Cannaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "canna-indica",
-    "commonName": "Indian shot"
-  },
-  {
-    "speciesName": "Carica papaya",
-    "family": "Caricaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "tree",
-    "id": "carica-papaya",
-    "commonName": "Papaya"
-  },
-  {
-    "speciesName": "Drymaria cordata",
-    "family": "Caryophyllaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "drymaria-cordata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Casuarina equisetifolia",
-    "family": "Casuarinaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "casuarina-equisetifolia",
-    "commonName": "Casuarina"
-  },
-  {
-    "speciesName": "Bhesa paniculata",
-    "family": "Celastraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "bhesa-paniculata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Licania splendens",
-    "family": "Chrysobalanaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "licania-splendens",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cleome aculeata",
-    "family": "Cleomaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "cleome-aculeata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Calophyllum ferrugineum",
-    "family": "Clusiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "calophyllum-ferrugineum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Gloriosa superba",
-    "family": "Colchicaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "climber",
-    "id": "gloriosa-superba",
-    "commonName": "Flame lily"
-  },
-  {
-    "speciesName": "Terminalia catappa",
-    "family": "Combretaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "terminalia-catappa",
-    "commonName": "Sea almond"
-  },
-  {
-    "speciesName": "Amischotolype gracilis",
-    "family": "Commelinaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "amischotolype-gracilis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cnestis palala",
-    "family": "Connaraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "cnestis-palala",
-    "commonName": null
-  },
-  {
-    "speciesName": "Erycibe tomentosa",
-    "family": "Convolvulaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "erycibe-tomentosa",
-    "commonName": null
-  },
-  {
-    "speciesName": "Costus speciosus",
-    "family": "Costaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "costus-speciosus",
-    "commonName": "Crepe ginger"
-  },
-  {
-    "speciesName": "Kalanchoe pinnata",
-    "family": "Crassulaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "kalanchoe-pinnata",
-    "commonName": "Miracle leaf"
-  },
-  {
-    "speciesName": "Coccinia grandis",
-    "family": "Cucurbitaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "climber",
-    "id": "coccinia-grandis",
-    "commonName": "Ivy gourd"
-  },
-  {
-    "speciesName": "Actinoscirpus grossus",
-    "family": "Cyperaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "actinoscirpus-grossus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Dillenia suffruticosa",
-    "family": "Dilleniaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "dillenia-suffruticosa",
-    "commonName": "Simpoh air"
-  },
-  {
-    "speciesName": "Dioscorea laurifolia",
-    "family": "Dioscoreaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "dioscorea-laurifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Diospyros lanceaefolia",
-    "family": "Ebenaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "diospyros-lanceaefolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Elaeocarpus ferrugineus",
-    "family": "Elaeocarpaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "elaeocarpus-ferrugineus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Erythroxylum cuneatum",
-    "family": "Erythroxylaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "erythroxylum-cuneatum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Agrostistachys borneensis",
-    "family": "Euphorbiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "agrostistachys-borneensis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Archidendron clypearia",
+    "id": "albizia-saman",
+    "speciesName": "Albizia saman",
     "family": "Fabaceae",
-    "status": "common",
-    "origin": "native",
+    "commonName": "Rain tree",
+    "status": "casual",
+    "origin": "exotic",
     "growthForm": "tree",
-    "id": "archidendron-clypearia",
-    "commonName": null
+    "source": "checklist"
   },
   {
-    "speciesName": "Flagellaria indica",
-    "family": "Flagellariaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "flagellaria-indica",
-    "commonName": null
-  },
-  {
+    "id": "fagraea-fragrans",
     "speciesName": "Fagraea fragrans",
     "family": "Gentianaceae",
+    "commonName": "Tembusu",
     "status": "common",
     "origin": "native",
     "growthForm": "tree",
-    "id": "fagraea-fragrans",
-    "commonName": "Tembusu"
+    "source": "checklist"
   },
   {
-    "speciesName": "Scaevola taccada",
-    "family": "Goodeniaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "scaevola-taccada",
-    "commonName": "Sea lettuce"
-  },
-  {
-    "speciesName": "Heliconia psittacorum",
-    "family": "Heliconiaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "heliconia-psittacorum",
-    "commonName": "Parrot's beak heliconia"
-  },
-  {
-    "speciesName": "Dianella ensifolia",
-    "family": "Hemerocallidaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "dianella-ensifolia",
-    "commonName": "Common dianella"
-  },
-  {
-    "speciesName": "Cratoxylum glaucum",
-    "family": "Hypericaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "cratoxylum-glaucum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Iodes velutina",
-    "family": "Icacinaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "iodes-velutina",
-    "commonName": null
-  },
-  {
-    "speciesName": "Trimezia martinicensis",
-    "family": "Iridaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "trimezia-martinicensis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ixonanthes reticulata",
-    "family": "Ixonanthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "ixonanthes-reticulata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Clerodendrum inerme",
-    "family": "Lamiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "clerodendrum-inerme",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cassytha filiformis",
-    "family": "Lauraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "cassytha-filiformis",
-    "commonName": "Love vine"
-  },
-  {
-    "speciesName": "Cordyline fruticosa",
-    "family": "Laxmanniaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "cordyline-fruticosa",
-    "commonName": "Ti plant"
-  },
-  {
-    "speciesName": "Limnocharis flava",
-    "family": "Limnocharitaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "limnocharis-flava",
-    "commonName": "Yellow velvetleaf"
-  },
-  {
-    "speciesName": "Indorouchera griffithiana",
-    "family": "Linaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "indorouchera-griffithiana",
-    "commonName": null
-  },
-  {
-    "speciesName": "Lindernia anagallis",
-    "family": "Linderniaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "lindernia-anagallis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Dendrophthoe pentandra",
-    "family": "Loranthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "epiphyte",
-    "id": "dendrophthoe-pentandra",
-    "commonName": null
-  },
-  {
-    "speciesName": "Sonneratia alba",
-    "family": "Lythraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "sonneratia-alba",
-    "commonName": "Mangrove apple"
-  },
-  {
-    "speciesName": "Maesa ramentacea",
-    "family": "Maesaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "maesa-ramentacea",
-    "commonName": null
-  },
-  {
-    "speciesName": "Malpighia coccigera",
-    "family": "Malpighiaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "malpighia-coccigera",
-    "commonName": "Singapore holly"
-  },
-  {
-    "speciesName": "Commersonia bartramia",
-    "family": "Malvaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "commersonia-bartramia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Thaumatococcus daniellii",
-    "family": "Marantaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "thaumatococcus-daniellii",
-    "commonName": null
-  },
-  {
-    "speciesName": "Melastoma malabathricum",
-    "family": "Melastomataceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "melastoma-malabathricum",
-    "commonName": "Singapore rhododendron"
-  },
-  {
-    "speciesName": "Xylocarpus granatum",
-    "family": "Meliaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "xylocarpus-granatum",
-    "commonName": "Nyireh bunga"
-  },
-  {
-    "speciesName": "Fibraurea tinctoria",
-    "family": "Menispermaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "fibraurea-tinctoria",
-    "commonName": null
-  },
-  {
-    "speciesName": "Artocarpus elasticus",
-    "family": "Moraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "artocarpus-elasticus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Morella esculenta",
-    "family": "Myricaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "morella-esculenta",
-    "commonName": null
-  },
-  {
-    "speciesName": "Myristica esculenta",
-    "family": "Myristicaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "myristica-esculenta",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ardisia colorata",
-    "family": "Myrsinaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "ardisia-colorata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Rhodamnia cinerea",
-    "family": "Myrtaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "rhodamnia-cinerea",
-    "commonName": null
-  },
-  {
-    "speciesName": "Nepenthes gracilis",
-    "family": "Nepenthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "nepenthes-gracilis",
-    "commonName": "Slender pitcher plant"
-  },
-  {
-    "speciesName": "Campylospermum serratum",
-    "family": "Ochnaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "campylospermum-serratum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ximenia americana",
-    "family": "Olacaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "ximenia-americana",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ludwigia peruviana",
-    "family": "Onagraceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "ludwigia-peruviana",
-    "commonName": null
-  },
-  {
-    "speciesName": "Champereia manillana",
-    "family": "Opiliaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "champereia-manillana",
-    "commonName": null
-  },
-  {
-    "speciesName": "Arundina graminifolia",
-    "family": "Orchidaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "arundina-graminifolia",
-    "commonName": "Bamboo orchid"
-  },
-  {
-    "speciesName": "Oxalis barrelieri",
-    "family": "Oxalidaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "oxalis-barrelieri",
-    "commonName": null
-  },
-  {
-    "speciesName": "Microdesmis caseariifolia",
-    "family": "Pandaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "microdesmis-caseariifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Freycinetia sumatrana",
-    "family": "Pandanaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "freycinetia-sumatrana",
-    "commonName": null
-  },
-  {
-    "speciesName": "Paropsia vareciformis",
-    "family": "Passifloraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "paropsia-vareciformis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Sesamum indicum",
-    "family": "Pedaliaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "sesamum-indicum",
-    "commonName": "Sesame"
-  },
-  {
-    "speciesName": "Adinandra dumosa",
-    "family": "Pentaphylacaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "adinandra-dumosa",
-    "commonName": null
-  },
-  {
-    "speciesName": "Antidesma cuspidatum",
-    "family": "Phyllanthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "antidesma-cuspidatum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Rivina humilis",
-    "family": "Phytolaccaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "rivina-humilis",
-    "commonName": "Bloodberry"
-  },
-  {
-    "speciesName": "Piper caninum",
-    "family": "Piperaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "piper-caninum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Adenosma javanicum",
-    "family": "Plantaginaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "adenosma-javanicum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Plumbago zeylanica",
-    "family": "Plumbaginaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "plumbago-zeylanica",
-    "commonName": "Ceylon leadwort"
-  },
-  {
-    "speciesName": "Centotheca longilamina",
-    "family": "Poaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "centotheca-longilamina",
-    "commonName": null
-  },
-  {
-    "speciesName": "Xanthophyllum rufum",
-    "family": "Polygalaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "xanthophyllum-rufum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Persicaria chinensis",
-    "family": "Polygonaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "persicaria-chinensis",
-    "commonName": "Chinese knotweed"
-  },
-  {
-    "speciesName": "Eichhornia crassipes",
-    "family": "Pontederiaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "eichhornia-crassipes",
-    "commonName": "Water hyacinth"
-  },
-  {
-    "speciesName": "Portulaca oleracea",
-    "family": "Portulacaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "portulaca-oleracea",
-    "commonName": "Common purslane"
-  },
-  {
-    "speciesName": "Drypetes curtisii",
-    "family": "Putranjavaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "drypetes-curtisii",
-    "commonName": null
-  },
-  {
-    "speciesName": "Colubrina asiatica",
-    "family": "Rhamnaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "colubrina-asiatica",
-    "commonName": null
-  },
-  {
-    "speciesName": "Bruguiera cylindrica",
-    "family": "Rhizophoraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "bruguiera-cylindrica",
-    "commonName": null
-  },
-  {
-    "speciesName": "Prunus polystachya",
-    "family": "Rosaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "prunus-polystachya",
-    "commonName": null
-  },
-  {
-    "speciesName": "Gynochthodes sublanceolata",
-    "family": "Rubiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "gynochthodes-sublanceolata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Dracaena porteri",
-    "family": "Ruscaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "dracaena-porteri",
-    "commonName": null
-  },
-  {
-    "speciesName": "Clausena excavata",
-    "family": "Rutaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "clausena-excavata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Flacourtia jangomas",
-    "family": "Salicaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "tree",
-    "id": "flacourtia-jangomas",
-    "commonName": "Rukam"
-  },
-  {
-    "speciesName": "Viscum articulatum",
-    "family": "Santalaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "epiphyte",
-    "id": "viscum-articulatum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Allophylus cobbe",
-    "family": "Sapindaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "allophylus-cobbe",
-    "commonName": null
-  },
-  {
-    "speciesName": "Mimusops elengi",
-    "family": "Sapotaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "tree",
-    "id": "mimusops-elengi",
-    "commonName": "Tanjong"
-  },
-  {
-    "speciesName": "Scoparia dulcis",
-    "family": "Scrophulariaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "scoparia-dulcis",
-    "commonName": "Sweet broomweed"
-  },
-  {
-    "speciesName": "Smilax setosa",
-    "family": "Smilacaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "smilax-setosa",
-    "commonName": null
-  },
-  {
-    "speciesName": "Solanum lasiocarpum",
-    "family": "Solanaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "solanum-lasiocarpum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Wikstroemia ridleyi",
-    "family": "Thymelaeaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "wikstroemia-ridleyi",
-    "commonName": null
-  },
-  {
-    "speciesName": "Turnera subulata",
-    "family": "Turneraceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "turnera-subulata",
-    "commonName": "White buttercup"
-  },
-  {
-    "speciesName": "Typha angustifolia",
-    "family": "Typhaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "typha-angustifolia",
-    "commonName": "Narrow-leaved cattail"
-  },
-  {
-    "speciesName": "Boehmeria nivea",
-    "family": "Urticaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "boehmeria-nivea",
-    "commonName": "Ramie"
-  },
-  {
-    "speciesName": "Lantana camara",
-    "family": "Verbenaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "lantana-camara",
-    "commonName": "Common lantana"
-  },
-  {
-    "speciesName": "Leea indica",
-    "family": "Vitaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "leea-indica",
-    "commonName": "Bandicoot berry"
-  },
-  {
-    "speciesName": "Alpinia galanga",
-    "family": "Zingiberaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "alpinia-galanga",
-    "commonName": "Greater galangal"
-  },
-  {
-    "speciesName": "Avicennia alba",
-    "family": "Acanthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "avicennia-alba",
-    "commonName": "Api-api putih"
-  },
-  {
-    "speciesName": "Cyathula prostrata",
-    "family": "Amaranthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "cyathula-prostrata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Campnosperma auriculata",
-    "family": "Anacardiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "campnosperma-auriculata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Friesodielsia latifolia",
-    "family": "Annonaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "friesodielsia-latifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Eryngium foetidum",
-    "family": "Apiaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "eryngium-foetidum",
-    "commonName": "Sawtooth coriander"
-  },
-  {
-    "speciesName": "Alstonia angustiloba",
-    "family": "Apocynaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "alstonia-angustiloba",
-    "commonName": "Pulai"
-  },
-  {
-    "speciesName": "Alocasia longiloba",
-    "family": "Araceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "alocasia-longiloba",
-    "commonName": null
-  },
-  {
-    "speciesName": "Hydrocotyle sibthorpioides",
-    "family": "Araliaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "hydrocotyle-sibthorpioides",
-    "commonName": null
-  },
-  {
-    "speciesName": "Arenga westerhoutii",
-    "family": "Arecaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "arenga-westerhoutii",
-    "commonName": null
-  },
-  {
-    "speciesName": "Melanthera biflora",
-    "family": "Asteraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "melanthera-biflora",
-    "commonName": null
-  },
-  {
-    "speciesName": "Spathodea campanulata",
-    "family": "Bignoniaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "tree",
-    "id": "spathodea-campanulata",
-    "commonName": "African tulip tree"
-  },
-  {
-    "speciesName": "Cordia cylindristachya",
-    "family": "Boraginaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "cordia-cylindristachya",
-    "commonName": null
-  },
-  {
-    "speciesName": "Santiria apiculata",
-    "family": "Burseraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "santiria-apiculata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Hippobroma longiflora",
-    "family": "Campanulaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "hippobroma-longiflora",
-    "commonName": "Star of Bethlehem"
-  },
-  {
-    "speciesName": "Trema cannabina",
-    "family": "Cannabaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "trema-cannabina",
-    "commonName": null
-  },
-  {
-    "speciesName": "Parinari elmeri",
-    "family": "Chrysobalanaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "parinari-elmeri",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cleome gynandra",
-    "family": "Cleomaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "cleome-gynandra",
-    "commonName": null
-  },
-  {
-    "speciesName": "Calophyllum pulcherrimum",
-    "family": "Clusiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "calophyllum-pulcherrimum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Floscopa scandens",
-    "family": "Commelinaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "floscopa-scandens",
-    "commonName": null
-  },
-  {
-    "speciesName": "Evolvulus alsinoides",
-    "family": "Convolvulaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "evolvulus-alsinoides",
-    "commonName": null
-  },
-  {
-    "speciesName": "Costus lucanusianus",
-    "family": "Costaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "costus-lucanusianus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cucumis maderaspatanus",
-    "family": "Cucurbitaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "climber",
-    "id": "cucumis-maderaspatanus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Bulbostylis barbata",
-    "family": "Cyperaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "bulbostylis-barbata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Tetracera indica",
-    "family": "Dilleniaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "tetracera-indica",
-    "commonName": null
-  },
-  {
-    "speciesName": "Dioscorea pyrifolia",
-    "family": "Dioscoreaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "dioscorea-pyrifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Elaeocarpus mastersii",
-    "family": "Elaeocarpaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "elaeocarpus-mastersii",
-    "commonName": null
-  },
-  {
-    "speciesName": "Claoxylon indicum",
-    "family": "Euphorbiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "claoxylon-indicum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Canavalia cathartica",
+    "id": "pterocarpus-indicus",
+    "speciesName": "Pterocarpus indicus",
     "family": "Fabaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "canavalia-cathartica",
-    "commonName": null
-  },
-  {
-    "speciesName": "Clerodendrum laevifolium",
-    "family": "Lamiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "clerodendrum-laevifolium",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cinnamomum iners",
-    "family": "Lauraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "cinnamomum-iners",
-    "commonName": "Wild cinnamon"
-  },
-  {
-    "speciesName": "Lindernia nummulariifolia",
-    "family": "Linderniaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "lindernia-nummulariifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Macrosolen cochinchinensis",
-    "family": "Loranthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "epiphyte",
-    "id": "macrosolen-cochinchinensis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ammannia baccifera",
-    "family": "Lythraceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "ammannia-baccifera",
-    "commonName": null
-  },
-  {
-    "speciesName": "Sida cordifolia",
-    "family": "Malvaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "sida-cordifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Clidemia hirta",
-    "family": "Melastomataceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "clidemia-hirta",
-    "commonName": "Koster's curse"
-  },
-  {
-    "speciesName": "Azadirachta indica",
-    "family": "Meliaceae",
+    "commonName": "Angsana",
     "status": "casual",
     "origin": "exotic",
     "growthForm": "tree",
-    "id": "azadirachta-indica",
-    "commonName": "Neem"
+    "source": "checklist"
   },
   {
-    "speciesName": "Tinospora crispa",
-    "family": "Menispermaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "climber",
-    "id": "tinospora-crispa",
-    "commonName": null
-  },
-  {
-    "speciesName": "Ficus aurantiaca",
-    "family": "Moraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "ficus-aurantiaca",
-    "commonName": null
-  },
-  {
-    "speciesName": "Horsfieldia parviflora",
-    "family": "Myristicaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "tree",
-    "id": "horsfieldia-parviflora",
-    "commonName": null
-  },
-  {
-    "speciesName": "Embelia lampani",
-    "family": "Myrsinaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "embelia-lampani",
-    "commonName": null
-  },
-  {
-    "speciesName": "Rhodomyrtus tomentosa",
-    "family": "Myrtaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "rhodomyrtus-tomentosa",
-    "commonName": "Kemunting"
-  },
-  {
-    "speciesName": "Bromheadia finlaysoniana",
-    "family": "Orchidaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "bromheadia-finlaysoniana",
-    "commonName": "Pale reed orchid"
-  },
-  {
-    "speciesName": "Oxalis corniculata",
-    "family": "Oxalidaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "oxalis-corniculata",
-    "commonName": "Creeping woodsorrel"
-  },
-  {
-    "speciesName": "Pandanus odorifer",
-    "family": "Pandanaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "pandanus-odorifer",
-    "commonName": "Screwpine"
-  },
-  {
-    "speciesName": "Passiflora foetida",
-    "family": "Passifloraceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "climber",
-    "id": "passiflora-foetida",
-    "commonName": "Stinking passionflower"
-  },
-  {
-    "speciesName": "Sesamum radiatum",
-    "family": "Pedaliaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "sesamum-radiatum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Eurya acuminata",
-    "family": "Pentaphylacaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "shrub",
-    "id": "eurya-acuminata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Aporosa frutescens",
-    "family": "Phyllanthaceae",
-    "status": "common",
+    "id": "peltophorum-pterocarpum",
+    "speciesName": "Peltophorum pterocarpum",
+    "family": "Fabaceae",
+    "commonName": "Yellow flame",
+    "status": "critically endangered",
     "origin": "native",
     "growthForm": "tree",
-    "id": "aporosa-frutescens",
-    "commonName": null
+    "source": "checklist"
   },
   {
-    "speciesName": "Piper sarmentosum",
-    "family": "Piperaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "piper-sarmentosum",
-    "commonName": "Wild betel"
-  },
-  {
-    "speciesName": "Bacopa monnieri",
-    "family": "Plantaginaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "bacopa-monnieri",
-    "commonName": "Brahmi"
-  },
-  {
-    "speciesName": "Chrysopogon aciculatus",
-    "family": "Poaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "chrysopogon-aciculatus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Polygala paniculata",
-    "family": "Polygalaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "polygala-paniculata",
-    "commonName": null
-  },
-  {
-    "speciesName": "Persicaria orientalis",
-    "family": "Polygonaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "persicaria-orientalis",
-    "commonName": null
-  },
-  {
-    "speciesName": "Portulaca quadrifida",
-    "family": "Portulacaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "portulaca-quadrifida",
-    "commonName": null
-  },
-  {
-    "speciesName": "Bruguiera gymnorhiza",
-    "family": "Rhizophoraceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "bruguiera-gymnorhiza",
-    "commonName": "Large-leafed orange mangrove"
-  },
-  {
-    "speciesName": "Duchesnea indica",
-    "family": "Rosaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "climber",
-    "id": "duchesnea-indica",
-    "commonName": "Mock strawberry"
-  },
-  {
-    "speciesName": "Hedyotis auricularia",
-    "family": "Rubiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "herb",
-    "id": "hedyotis-auricularia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Dracaena fragrans",
-    "family": "Ruscaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "dracaena-fragrans",
-    "commonName": "Corn plant"
-  },
-  {
-    "speciesName": "Zanthoxylum nitidum",
-    "family": "Rutaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "climber",
-    "id": "zanthoxylum-nitidum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Viscum ovalifolium",
-    "family": "Santalaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "epiphyte",
-    "id": "viscum-ovalifolium",
-    "commonName": null
-  },
-  {
-    "speciesName": "Lepisanthes rubiginosa",
-    "family": "Sapindaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "lepisanthes-rubiginosa",
-    "commonName": null
-  },
-  {
-    "speciesName": "Solanum sarmentosum",
-    "family": "Solanaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "solanum-sarmentosum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Turnera ulmifolia",
-    "family": "Turneraceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "turnera-ulmifolia",
-    "commonName": null
-  },
-  {
-    "speciesName": "Cecropia pachystachya",
-    "family": "Urticaceae",
-    "status": "naturalised",
+    "id": "delonix-regia",
+    "speciesName": "Delonix regia",
+    "family": "Fabaceae",
+    "commonName": "Flame of the forest",
+    "status": "cultivated only",
     "origin": "exotic",
     "growthForm": "tree",
-    "id": "cecropia-pachystachya",
-    "commonName": null
+    "source": "checklist"
   },
   {
-    "speciesName": "Lantana indica",
-    "family": "Verbenaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "shrub",
-    "id": "lantana-indica",
-    "commonName": null
-  },
-  {
-    "speciesName": "Zingiber zerumbet",
-    "family": "Zingiberaceae",
-    "status": "casual",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "zingiber-zerumbet",
-    "commonName": "Shampoo ginger"
-  },
-  {
-    "speciesName": "Avicennia officinalis",
-    "family": "Acanthaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "avicennia-officinalis",
-    "commonName": "Api-api ludat"
-  },
-  {
-    "speciesName": "Alternanthera bettzickiana",
-    "family": "Amaranthaceae",
-    "status": "naturalised",
-    "origin": "exotic",
-    "growthForm": "herb",
-    "id": "alternanthera-bettzickiana",
-    "commonName": null
-  },
-  {
-    "speciesName": "Campnosperma squamatum",
-    "family": "Anacardiaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "campnosperma-squamatum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Goniothalamus tortilipetalus",
-    "family": "Annonaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "tree",
-    "id": "goniothalamus-tortilipetalus",
-    "commonName": null
-  },
-  {
-    "speciesName": "Alyxia reinwardtii",
+    "id": "plumeria-rubra",
+    "speciesName": "Plumeria rubra",
     "family": "Apocynaceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": null,
-    "id": "alyxia-reinwardtii",
-    "commonName": null
-  },
-  {
-    "speciesName": "Epipremnum giganteum",
-    "family": "Araceae",
-    "status": "common",
-    "origin": "native",
-    "growthForm": "epiphyte",
-    "id": "epipremnum-giganteum",
-    "commonName": null
-  },
-  {
-    "speciesName": "Schefflera actinophylla",
-    "family": "Araliaceae",
-    "status": "casual",
+    "commonName": "Frangipani",
+    "status": "cultivated only",
     "origin": "exotic",
     "growthForm": "tree",
-    "id": "schefflera-actinophylla",
-    "commonName": "Umbrella tree"
+    "source": "checklist"
   },
   {
+    "id": "adenanthera-pavonina",
+    "speciesName": "Adenanthera pavonina",
+    "family": "Fabaceae",
+    "commonName": "Saga",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "terminalia-catappa",
+    "speciesName": "Terminalia catappa",
+    "family": "Combretaceae",
+    "commonName": "Sea almond",
+    "status": "common",
+    "origin": "native",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "syzygium-grande",
+    "speciesName": "Syzygium grande",
+    "family": "Myrtaceae",
+    "commonName": "Sea apple",
+    "status": "common",
+    "origin": "native",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "casuarina-equisetifolia",
+    "speciesName": "Casuarina equisetifolia",
+    "family": "Casuarinaceae",
+    "commonName": "Casuarina",
+    "status": "common",
+    "origin": "native",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "ficus-benjamina",
+    "speciesName": "Ficus benjamina",
+    "family": "Moraceae",
+    "commonName": "Weeping fig",
+    "status": "weed of uncertain origin",
+    "origin": "weed of uncertain origin",
+    "growthForm": "strangler",
+    "source": "checklist"
+  },
+  {
+    "id": "cocos-nucifera",
     "speciesName": "Cocos nucifera",
     "family": "Arecaceae",
+    "commonName": "Coconut palm",
     "status": "naturalised",
     "origin": "exotic",
     "growthForm": "tree",
-    "id": "cocos-nucifera",
-    "commonName": "Coconut palm"
+    "source": "checklist"
   },
   {
-    "speciesName": "Pluchea indica",
-    "family": "Asteraceae",
+    "id": "ravenala-madagascariensis",
+    "speciesName": "Ravenala madagascariensis",
+    "family": "Strelitziaceae",
+    "commonName": "Traveller's palm",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "cassia-fistula",
+    "speciesName": "Cassia fistula",
+    "family": "Fabaceae",
+    "commonName": "Golden shower",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "hevea-brasiliensis",
+    "speciesName": "Hevea brasiliensis",
+    "family": "Euphorbiaceae",
+    "commonName": "Rubber tree",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "talipariti-tiliaceum",
+    "speciesName": "Talipariti tiliaceum",
+    "family": "Malvaceae",
+    "commonName": "Sea hibiscus",
     "status": "common",
     "origin": "native",
-    "growthForm": "shrub",
-    "id": "pluchea-indica",
-    "commonName": null
+    "growthForm": "tree",
+    "source": "checklist"
   },
   {
-    "speciesName": "Tabebuia rosea",
-    "family": "Bignoniaceae",
+    "id": "mangifera-indica",
+    "speciesName": "Mangifera indica",
+    "family": "Anacardiaceae",
+    "commonName": "Mango",
     "status": "casual",
     "origin": "exotic",
     "growthForm": "tree",
-    "id": "tabebuia-rosea",
-    "commonName": "Trumpet tree"
+    "source": "checklist"
   },
   {
-    "speciesName": "Santiria griffithii",
-    "family": "Burseraceae",
+    "id": "artocarpus-heterophyllus",
+    "speciesName": "Artocarpus heterophyllus",
+    "family": "Moraceae",
+    "commonName": "Jackfruit",
+    "status": "casual",
+    "origin": "exotic",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "musa-acuminata",
+    "speciesName": "Musa acuminata",
+    "family": "Musaceae",
+    "commonName": "Banana",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "bougainvillea-glabra",
+    "speciesName": "Bougainvillea glabra",
+    "family": "Nyctaginaceae",
+    "commonName": "Bougainvillea",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "hibiscus-rosa-sinensis",
+    "speciesName": "Hibiscus rosa-sinensis",
+    "family": "Malvaceae",
+    "commonName": "Chinese hibiscus",
+    "status": "casual",
+    "origin": "exotic",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "ixora-chinensis",
+    "speciesName": "Ixora chinensis",
+    "family": "Rubiaceae",
+    "commonName": "Ixora",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "allamanda-cathartica",
+    "speciesName": "Allamanda cathartica",
+    "family": "Apocynaceae",
+    "commonName": "Allamanda",
+    "status": "casual",
+    "origin": "exotic",
+    "growthForm": "climber",
+    "source": "checklist"
+  },
+  {
+    "id": "lantana-camara",
+    "speciesName": "Lantana camara",
+    "family": "Verbenaceae",
+    "commonName": "Lantana",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "catharanthus-roseus",
+    "speciesName": "Catharanthus roseus",
+    "family": "Apocynaceae",
+    "commonName": "Madagascar periwinkle",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "melastoma-malabathricum",
+    "speciesName": "Melastoma malabathricum",
+    "family": "Melastomataceae",
+    "commonName": "Singapore rhododendron",
     "status": "common",
     "origin": "native",
-    "growthForm": "tree",
-    "id": "santiria-griffithii",
-    "commonName": null
+    "growthForm": "shrub",
+    "source": "checklist"
   },
   {
-    "speciesName": "Lobelia chinensis",
-    "family": "Campanulaceae",
+    "id": "dillenia-suffruticosa",
+    "speciesName": "Dillenia suffruticosa",
+    "family": "Dilleniaceae",
+    "commonName": "Simpoh air",
+    "status": "common",
+    "origin": "native",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "heliconia-psittacorum",
+    "speciesName": "Heliconia psittacorum",
+    "family": "Heliconiaceae",
+    "commonName": "Heliconia",
+    "status": "casual",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "strelitzia-reginae",
+    "speciesName": "Strelitzia reginae",
+    "family": "Strelitziaceae",
+    "commonName": "Bird of paradise",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "etlingera-elatior",
+    "speciesName": "Etlingera elatior",
+    "family": "Zingiberaceae",
+    "commonName": "Torch ginger",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "papilionanthe-miss-joaquim",
+    "speciesName": "Papilionanthe Miss Joaquim",
+    "family": "Orchidaceae",
+    "commonName": "Vanda Miss Joaquim",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "climber",
+    "source": "cultivar"
+  },
+  {
+    "id": "mimosa-pudica",
+    "speciesName": "Mimosa pudica",
+    "family": "Fabaceae",
+    "commonName": "Touch-me-not",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "imperata-cylindrica",
+    "speciesName": "Imperata cylindrica",
+    "family": "Poaceae",
+    "commonName": "Lalang",
+    "status": "weed of uncertain origin",
+    "origin": "weed of uncertain origin",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "sphagneticola-trilobata",
+    "speciesName": "Sphagneticola trilobata",
+    "family": "Asteraceae",
+    "commonName": "Creeping daisy",
     "status": "naturalised",
     "origin": "exotic",
     "growthForm": "herb",
-    "id": "lobelia-chinensis",
-    "commonName": null
+    "source": "checklist"
   },
   {
-    "speciesName": "Trema tomentosa",
-    "family": "Cannabaceae",
-    "status": "common",
-    "origin": "native",
+    "id": "asystasia-gangetica",
+    "speciesName": "Asystasia gangetica",
+    "family": "Acanthaceae",
+    "commonName": "Chinese violet",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "ipomoea-cairica",
+    "speciesName": "Ipomoea cairica",
+    "family": "Convolvulaceae",
+    "commonName": "Railway creeper",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "climber",
+    "source": "checklist"
+  },
+  {
+    "id": "clitoria-ternatea",
+    "speciesName": "Clitoria ternatea",
+    "family": "Fabaceae",
+    "commonName": "Butterfly pea",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "climber",
+    "source": "checklist"
+  },
+  {
+    "id": "eichhornia-crassipes",
+    "speciesName": "Eichhornia crassipes",
+    "family": "Pontederiaceae",
+    "commonName": "Water hyacinth",
+    "status": "naturalised",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "epipremnum-aureum",
+    "speciesName": "Epipremnum aureum",
+    "family": "Araceae",
+    "commonName": "Money plant",
+    "status": "casual",
+    "origin": "exotic",
+    "growthForm": "climber",
+    "source": "checklist"
+  },
+  {
+    "id": "colocasia-esculenta",
+    "speciesName": "Colocasia esculenta",
+    "family": "Araceae",
+    "commonName": "Elephant ear",
+    "status": "casual",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "pandanus-amaryllifolius",
+    "speciesName": "Pandanus amaryllifolius",
+    "family": "Pandanaceae",
+    "commonName": "Pandan",
+    "status": "casual",
+    "origin": "exotic",
     "growthForm": "shrub",
-    "id": "trema-tomentosa",
-    "commonName": null
+    "source": "checklist"
   },
   {
-    "speciesName": "Chrysobalanus icaco",
-    "family": "Chrysobalanaceae",
+    "id": "ipomoea-aquatica",
+    "speciesName": "Ipomoea aquatica",
+    "family": "Convolvulaceae",
+    "commonName": "Kangkong",
+    "status": "weed of uncertain origin",
+    "origin": "weed of uncertain origin",
+    "growthForm": "climber",
+    "source": "checklist"
+  },
+  {
+    "id": "cymbopogon-citratus",
+    "speciesName": "Cymbopogon citratus",
+    "family": "Poaceae",
+    "commonName": "Lemongrass",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "capsicum-annuum",
+    "speciesName": "Capsicum annuum",
+    "family": "Solanaceae",
+    "commonName": "Chilli",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "manihot-esculenta",
+    "speciesName": "Manihot esculenta",
+    "family": "Euphorbiaceae",
+    "commonName": "Tapioca",
     "status": "naturalised",
     "origin": "exotic",
     "growthForm": "shrub",
-    "id": "chrysobalanus-icaco",
-    "commonName": "Coco plum"
+    "source": "checklist"
+  },
+  {
+    "id": "ananas-comosus",
+    "speciesName": "Ananas comosus",
+    "family": "Bromeliaceae",
+    "commonName": "Pineapple",
+    "status": "casual",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
+  },
+  {
+    "id": "avicennia-alba",
+    "speciesName": "Avicennia alba",
+    "family": "Acanthaceae",
+    "commonName": "Api-api putih",
+    "status": "common",
+    "origin": "native",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "rhizophora-apiculata",
+    "speciesName": "Rhizophora apiculata",
+    "family": "Rhizophoraceae",
+    "commonName": "Bakau minyak",
+    "status": "common",
+    "origin": "native",
+    "growthForm": "tree",
+    "source": "checklist"
+  },
+  {
+    "id": "nypa-fruticans",
+    "speciesName": "Nypa fruticans",
+    "family": "Arecaceae",
+    "commonName": "Nipah palm",
+    "status": "vulnerable",
+    "origin": "native",
+    "growthForm": "shrub",
+    "source": "checklist"
+  },
+  {
+    "id": "nelumbo-nucifera",
+    "speciesName": "Nelumbo nucifera",
+    "family": "Nelumbonaceae",
+    "commonName": "Lotus",
+    "status": "cultivated only",
+    "origin": "exotic",
+    "growthForm": "herb",
+    "source": "checklist"
   }
 ]

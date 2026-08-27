@@ -60,3 +60,6 @@ raw_damp/
 # where submitted artefacts live. Keep them local.
 individual-report*
 **/individual-report*
+
+# Python bytecode from scripts/
+__pycache__/

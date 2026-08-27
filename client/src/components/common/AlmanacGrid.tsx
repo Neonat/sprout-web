@@ -79,15 +79,27 @@ export function AlmanacGrid({
                     : 'text-black/15'
               }`}
             />
+            {/* Common name first, binomial beneath.
+                This was the other way round, and could not safely be flipped:
+                the generated 200 had a common name for only 68 of them, so the
+                other 132 cards would have led with the family — worse than the
+                binomial for actually finding a plant. The curated 50 all carry
+                one, so the useful line can lead. The binomial stays because it
+                is what the scanner matches on, and because a card that only
+                said "Rain tree" would teach a player nothing. */}
             <p
-              className={`mt-2 text-[11px] leading-snug font-semibold italic ${
+              className={`mt-2 text-[11px] leading-snug font-semibold ${
                 dark ? 'text-white/85' : ''
               }`}
             >
-              {entry.speciesName}
+              {entry.commonName ?? entry.speciesName}
             </p>
-            <p className={`text-[10px] leading-snug ${dark ? 'text-white/45' : 'opacity-60'}`}>
-              {entry.commonName ?? entry.family}
+            <p
+              className={`text-[10px] leading-snug italic ${
+                dark ? 'text-white/45' : 'opacity-60'
+              }`}
+            >
+              {entry.commonName ? entry.speciesName : entry.family}
             </p>
             <p
               className={`font-pixel mt-2 text-[9px] ${

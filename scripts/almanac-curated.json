@@ -1,0 +1,337 @@
+{
+  "_readme": "The almanac's curated species. Order here is display order. Metadata (family/status/origin/growthForm) is filled from the Chong et al. checklist at build time; only a `cultivar: true` row carries its own, because the checklist has no entry for it. Move rows between `species` and `alternates` to change the almanac; nothing else needs editing.",
+  "species": [
+    {
+      "group": "Trees",
+      "commonName": "Rain tree",
+      "speciesName": "Albizia saman"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Tembusu",
+      "speciesName": "Fagraea fragrans"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Angsana",
+      "speciesName": "Pterocarpus indicus"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Yellow flame",
+      "speciesName": "Peltophorum pterocarpum"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Flame of the forest",
+      "speciesName": "Delonix regia"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Frangipani",
+      "speciesName": "Plumeria rubra"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Saga",
+      "speciesName": "Adenanthera pavonina"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Sea almond",
+      "speciesName": "Terminalia catappa"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Sea apple",
+      "speciesName": "Syzygium grande"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Casuarina",
+      "speciesName": "Casuarina equisetifolia"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Weeping fig",
+      "speciesName": "Ficus benjamina"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Coconut palm",
+      "speciesName": "Cocos nucifera"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Traveller's palm",
+      "speciesName": "Ravenala madagascariensis"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Golden shower",
+      "speciesName": "Cassia fistula"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Rubber tree",
+      "speciesName": "Hevea brasiliensis"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Sea hibiscus",
+      "speciesName": "Talipariti tiliaceum"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Mango",
+      "speciesName": "Mangifera indica"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Jackfruit",
+      "speciesName": "Artocarpus heterophyllus"
+    },
+    {
+      "group": "Trees",
+      "commonName": "Banana",
+      "speciesName": "Musa acuminata"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Bougainvillea",
+      "speciesName": "Bougainvillea glabra"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Chinese hibiscus",
+      "speciesName": "Hibiscus rosa-sinensis"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Ixora",
+      "speciesName": "Ixora chinensis"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Allamanda",
+      "speciesName": "Allamanda cathartica"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Lantana",
+      "speciesName": "Lantana camara"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Madagascar periwinkle",
+      "speciesName": "Catharanthus roseus"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Singapore rhododendron",
+      "speciesName": "Melastoma malabathricum"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Simpoh air",
+      "speciesName": "Dillenia suffruticosa"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Heliconia",
+      "speciesName": "Heliconia psittacorum"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Bird of paradise",
+      "speciesName": "Strelitzia reginae"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Torch ginger",
+      "speciesName": "Etlingera elatior"
+    },
+    {
+      "group": "Shrubs & flowers",
+      "commonName": "Vanda Miss Joaquim",
+      "speciesName": "Papilionanthe Miss Joaquim",
+      "cultivar": true,
+      "family": "Orchidaceae",
+      "status": "cultivated only",
+      "origin": "exotic",
+      "growthForm": "climber"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Touch-me-not",
+      "speciesName": "Mimosa pudica"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Lalang",
+      "speciesName": "Imperata cylindrica"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Creeping daisy",
+      "speciesName": "Sphagneticola trilobata"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Chinese violet",
+      "speciesName": "Asystasia gangetica"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Railway creeper",
+      "speciesName": "Ipomoea cairica"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Butterfly pea",
+      "speciesName": "Clitoria ternatea"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Water hyacinth",
+      "speciesName": "Eichhornia crassipes"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Money plant",
+      "speciesName": "Epipremnum aureum"
+    },
+    {
+      "group": "Weeds & ground",
+      "commonName": "Elephant ear",
+      "speciesName": "Colocasia esculenta"
+    },
+    {
+      "group": "Kitchen",
+      "commonName": "Pandan",
+      "speciesName": "Pandanus amaryllifolius"
+    },
+    {
+      "group": "Kitchen",
+      "commonName": "Kangkong",
+      "speciesName": "Ipomoea aquatica"
+    },
+    {
+      "group": "Kitchen",
+      "commonName": "Lemongrass",
+      "speciesName": "Cymbopogon citratus"
+    },
+    {
+      "group": "Kitchen",
+      "commonName": "Chilli",
+      "speciesName": "Capsicum annuum"
+    },
+    {
+      "group": "Kitchen",
+      "commonName": "Tapioca",
+      "speciesName": "Manihot esculenta"
+    },
+    {
+      "group": "Kitchen",
+      "commonName": "Pineapple",
+      "speciesName": "Ananas comosus"
+    },
+    {
+      "group": "Coastal",
+      "commonName": "Api-api putih",
+      "speciesName": "Avicennia alba"
+    },
+    {
+      "group": "Coastal",
+      "commonName": "Bakau minyak",
+      "speciesName": "Rhizophora apiculata"
+    },
+    {
+      "group": "Coastal",
+      "commonName": "Nipah palm",
+      "speciesName": "Nypa fruticans"
+    },
+    {
+      "group": "Water",
+      "commonName": "Lotus",
+      "speciesName": "Nelumbo nucifera"
+    }
+  ],
+  "alternates": [
+    {
+      "group": "Alternates",
+      "commonName": "Indian banyan",
+      "speciesName": "Ficus benghalensis"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Cotton tree",
+      "speciesName": "Bombax ceiba"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Neem",
+      "speciesName": "Azadirachta indica"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Rambutan",
+      "speciesName": "Nephelium lappaceum"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Starfruit",
+      "speciesName": "Averrhoa carambola"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Papaya",
+      "speciesName": "Carica papaya"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Oleander",
+      "speciesName": "Nerium oleander"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Sea lettuce",
+      "speciesName": "Scaevola taccada"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Nutgrass",
+      "speciesName": "Cyperus rotundus"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Sweet potato",
+      "speciesName": "Ipomoea batatas"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Betel",
+      "speciesName": "Piper betle"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Turmeric",
+      "speciesName": "Curcuma longa"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Galangal",
+      "speciesName": "Alpinia galanga"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Laksa leaf",
+      "speciesName": "Persicaria odorata"
+    },
+    {
+      "group": "Alternates",
+      "commonName": "Water lily",
+      "speciesName": "Nymphaea rubra"
+    }
+  ]
+}

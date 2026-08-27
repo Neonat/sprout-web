@@ -1,29 +1,51 @@
 /**
- * The almanac's fixed taxonomy: 200 flowering plants a player can actually find
- * in Singapore.
+ * The almanac's fixed taxonomy: 50 flowering plants a person in Singapore can
+ * name on sight.
  *
- * The species, family, status, origin and growth form all come from the
- * published checklist, so nothing here is invented:
+ * The species themselves are curated — `scripts/almanac-curated.json` is the
+ * list, and it is the honest place for a recognisability judgement to live.
+ * Everything *about* each species comes from the published checklist, so no
+ * family, status, origin or growth form here is invented:
  *
  *   Chong, K. Y., Tan, H. T. W. & Corlett, R. T. (2009). A Checklist of the
  *   Total Vascular Plant Flora of Singapore: Native, Naturalised and Cultivated
  *   Species. Raffles Museum of Biodiversity Research, NUS.
  *
- * scripts/extract-flora-checklist.py builds the JSON and documents the
- * selection rules. Two things it does are worth knowing here: only species the
- * checklist itself calls common, naturalised or casual are included, since an
- * almanac full of critically endangered forest specialists is one nobody can
- * complete; and families are drawn round-robin, because Poaceae and Cyperaceae
- * between them have 64 common species and an almanac that is a third roadside
- * grass is unplayable.
+ * One row is not from the checklist and says so: Vanda Miss Joaquim is the
+ * national flower and a man-made hybrid (Papilionanthe Miss Joaquim), so a
+ * checklist of species has no entry for it. That row carries `source:
+ * 'cultivar'`; the other 49 carry `source: 'checklist'`.
  *
- * Common names are the exception — the checklist has none. They are hand-added
- * for the species whose English or Malay name is well established here, and are
- * null for the rest rather than invented to fill the column.
+ * This list used to be 200 species selected mechanically, and the selection is
+ * why bougainvillea, lalang and the touch-me-not were all missing: the rules
+ * excluded `cultivated only` (1,491 species, which in Singapore means most
+ * roadside and garden planting) and `weed of uncertain origin` (208), then
+ * broke ties alphabetically twice over, so half the almanac was genera starting
+ * A-E. See the script's docstring for the full account.
+ *
+ * Common names are not in the source. They are part of the curated list rather
+ * than a lookup applied afterwards, which is why all 50 have one.
  */
 import taxonomy from './almanac-taxonomy.json';
 
-export type AlmanacStatus = 'common' | 'naturalised' | 'casual';
+/** The checklist's own conservation/occurrence categories, verbatim.
+ *
+ *  All of them, not just the three the old selector kept: curation decides what
+ *  belongs in the almanac now, so the status is something a card reports rather
+ *  than a filter. `cultivated only` is the interesting one here — it is what
+ *  the source calls a plant that grows in Singapore only because someone
+ *  planted it, which describes most of what a person actually walks past. */
+export type AlmanacStatus =
+  | 'common'
+  | 'naturalised'
+  | 'casual'
+  | 'cultivated only'
+  | 'weed of uncertain origin'
+  | 'vulnerable'
+  | 'endangered'
+  | 'critically endangered'
+  | 'extinct'
+  | 'globally extinct';
 export type AlmanacOrigin = 'native' | 'exotic' | 'weed of uncertain origin';
 export type AlmanacGrowthForm =
   | 'tree'
@@ -42,13 +64,18 @@ export interface AlmanacSpecies {
   status: AlmanacStatus;
   origin: AlmanacOrigin | null;
   growthForm: AlmanacGrowthForm | null;
+  /** Where this row's details came from. 'cultivar' means the checklist has no
+   *  entry for it and the metadata is hand-written — see the note above. */
+  source: 'checklist' | 'cultivar';
 }
 
 export const ALMANAC_SPECIES = taxonomy as AlmanacSpecies[];
 
 export const ALMANAC_SOURCE =
-  'Chong, Tan & Corlett (2009), A Checklist of the Total Vascular Plant Flora ' +
-  'of Singapore. Raffles Museum of Biodiversity Research, NUS.';
+  'Species details from Chong, Tan & Corlett (2009), A Checklist of the Total ' +
+  'Vascular Plant Flora of Singapore. Raffles Museum of Biodiversity Research, ' +
+  'NUS. Selection is our own; Vanda Miss Joaquim is a cultivar not in the ' +
+  'checklist.';
 
 /**
  * The almanac key for a scientific name.
@@ -77,8 +104,27 @@ export function almanacIdForSpecies(speciesName: string): string | null {
 
 const BY_ID = new Map(ALMANAC_SPECIES.map((species) => [species.id, species]));
 
+/** The same species, keyed on the whole name slugified rather than reduced to
+ *  a binomial.
+ *
+ *  Needed for the cultivar. `Papilionanthe Miss Joaquim` is three words, and
+ *  almanacIdForSpecies keeps two — it is built to strip an authority, and a
+ *  cultivar epithet looks exactly like one to it. Reducing the id to
+ *  `papilionanthe-miss` to satisfy the binomial rule would name the card after
+ *  half a plant, so the name stays whole and the lookup learns a second key. */
+const BY_NAME_SLUG = new Map(
+  ALMANAC_SPECIES.map((species) => [
+    species.speciesName.toLowerCase().replace(/\s+/g, '-'),
+    species,
+  ])
+);
+
 /** The almanac entry a scientific name belongs to, if the almanac lists it. */
 export function findAlmanacSpecies(speciesName: string): AlmanacSpecies | null {
+  const slug = speciesName.trim().toLowerCase().replace(/\s+/g, '-');
+  const exact = BY_NAME_SLUG.get(slug);
+  if (exact) return exact;
+
   const id = almanacIdForSpecies(speciesName);
   return id ? (BY_ID.get(id) ?? null) : null;
 }

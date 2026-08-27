@@ -1,7 +1,6 @@
 """
-Builds server/data/almanac-taxonomy.json from the published Singapore flora
-checklist. One-off, kept for provenance: re-run it if the selection rules change
-or the source is updated.
+Builds server/data/almanac-taxonomy.json from a curated species list, with the
+metadata for each species read out of the published Singapore flora checklist.
 
     Chong, K. Y., Tan, H. T. W. & Corlett, R. T. (2009).
     A Checklist of the Total Vascular Plant Flora of Singapore:
@@ -16,118 +15,71 @@ different final columns: status (pp. 13-95), origin (pp. 96-190) and growth form
 (pp. 191-277). Every row reads `N. Species Authority; Family; value`, so the
 three are parsed separately and joined on the binomial.
 
-Selection, in order:
-  1. Keep only species the checklist itself calls common, naturalised or casual.
-     Those are the ones a player can actually walk up to. Extinct and the
-     threatened categories are excluded — an almanac you cannot complete is a
-     worse game — as is `cultivated only`, which is 1,492 species and mostly
-     landscaping stock nobody can name.
-  2. Drop the 19 fern and clubmoss families, leaving flowering plants only.
-  3. Round-robin across families, so no single family dominates: Poaceae and
-     Cyperaceae alone have 64 common species, and an almanac that is a third
-     roadside grass is unplayable.
-Common names are NOT in the source. They are hand-added afterwards for the
-species where the name is well established, and left null otherwise.
+WHICH SPECIES
+-------------
+The list is `scripts/almanac-curated.json` — 50 plants a person in Singapore
+can name on sight. Edit that file to change the almanac; this script only looks
+their details up.
+
+It used to select mechanically instead: keep the common/naturalised/casual
+species, drop the ferns, then round-robin across families to 200. That produced
+an almanac nobody could recognise. Two rules did the damage.
+
+`cultivated only` excluded 1,491 species, which is where bougainvillea,
+frangipani, flame of the forest and the whole of Nyctaginaceae live — in
+Singapore they are roadside and garden planting, so a checklist of wild and
+naturalised flora rightly calls them cultivated, and a game about plants people
+walk past rightly wants them. `weed of uncertain origin` excluded another 208,
+including lalang and kangkong.
+
+The round-robin then sorted alphabetically twice over — species within a family,
+and families within each depth — so with 120 families and 200 slots the third
+slot reached only `Acanthaceae` through `Chrysobalanaceae`. Half the almanac was
+genera starting A-E. Fabaceae, one of the largest families here, got two slots,
+and they went to Archidendron and Canavalia; Mimosa pudica was in the candidate
+pool the whole time and never had a chance against the letter A.
+
+Curating 50 does the job the status filter was reaching for — an almanac you can
+finish — directly, and without pretending the selection is derived from the
+source when the recognisability judgement is ours.
+
+PROVENANCE
+----------
+Every row's family, status, origin and growth form is read from the checklist,
+so nothing here is invented. The exception is a row marked `"cultivar": true`,
+which carries its own: Vanda Miss Joaquim is a man-made hybrid
+(Papilionanthe Miss Joaquim) and a checklist of species has no entry for it.
+Those rows are stamped `source: "cultivar"`; everything else is
+`source: "checklist"`.
+
+Common names are not in the source either. They are part of the curated list,
+which is why all 50 have one where the old generated 200 managed 68.
 """
 import json
+import os
 import re
 import sys
-from collections import defaultdict
 
 STATUS_PAGES = (12, 94)
 ORIGIN_PAGES = (95, 189)
 FORM_PAGES = (190, 276)
 
-# Ferns and clubmosses in the candidate pool. The checklist is vascular plants
-# only, so excluding these leaves angiosperms — no gymnosperm family survives
-# the status filter, and fungi were never in scope.
-NON_ANGIOSPERM_FAMILIES = {
-    "Adiantaceae", "Aspleniaceae", "Blechnaceae", "Davalliaceae", "Dennstaedtiaceae",
-    "Dryopteridaceae", "Gleicheniaceae", "Lycopodiaceae", "Oleandraceae",
-    "Ophioglossaceae", "Polypodiaceae", "Psilotaceae", "Pteridaceae", "Salviniaceae",
-    "Schizaeaceae", "Selaginellaceae", "Thelypteridaceae", "Vittariaceae", "Woodsiaceae",
-}
+CURATED_PATH = os.path.join(os.path.dirname(__file__), "almanac-curated.json")
 
-# Common names are not in the checklist. These are hand-added for species whose
-# English or Malay name is well established in Singapore; everything else stays
-# null rather than carry a name invented to fill the column.
-COMMON_NAMES = {
-    "Acanthus ilicifolius": "Sea holly",
-    "Alpinia galanga": "Greater galangal",
-    "Alstonia angustiloba": "Pulai",
-    "Ananas comosus": "Pineapple",
-    "Arundina graminifolia": "Bamboo orchid",
-    "Avicennia alba": "Api-api putih",
-    "Avicennia officinalis": "Api-api ludat",
-    "Azadirachta indica": "Neem",
-    "Bacopa monnieri": "Brahmi",
-    "Boehmeria nivea": "Ramie",
-    "Bromheadia finlaysoniana": "Pale reed orchid",
-    "Bruguiera gymnorhiza": "Large-leafed orange mangrove",
-    "Canna indica": "Indian shot",
-    "Carica papaya": "Papaya",
-    "Carmona retusa": "Fukien tea",
-    "Caryota mitis": "Fishtail palm",
-    "Cassytha filiformis": "Love vine",
-    "Casuarina equisetifolia": "Casuarina",
-    "Centella asiatica": "Pegaga",
-    "Chrysobalanus icaco": "Coco plum",
-    "Cinnamomum iners": "Wild cinnamon",
-    "Clidemia hirta": "Koster's curse",
-    "Coccinia grandis": "Ivy gourd",
-    "Cocos nucifera": "Coconut palm",
-    "Cordyline fruticosa": "Ti plant",
-    "Costus speciosus": "Crepe ginger",
-    "Dianella ensifolia": "Common dianella",
-    "Dillenia suffruticosa": "Simpoh air",
-    "Dracaena fragrans": "Corn plant",
-    "Duchesnea indica": "Mock strawberry",
-    "Eichhornia crassipes": "Water hyacinth",
-    "Eryngium foetidum": "Sawtooth coriander",
-    "Fagraea fragrans": "Tembusu",
-    "Flacourtia jangomas": "Rukam",
-    "Gloriosa superba": "Flame lily",
-    "Heliconia psittacorum": "Parrot's beak heliconia",
-    "Hippobroma longiflora": "Star of Bethlehem",
-    "Kalanchoe pinnata": "Miracle leaf",
-    "Lantana camara": "Common lantana",
-    "Leea indica": "Bandicoot berry",
-    "Limnocharis flava": "Yellow velvetleaf",
-    "Malpighia coccigera": "Singapore holly",
-    "Melastoma malabathricum": "Singapore rhododendron",
-    "Mimusops elengi": "Tanjong",
-    "Nepenthes gracilis": "Slender pitcher plant",
-    "Oxalis corniculata": "Creeping woodsorrel",
-    "Pandanus odorifer": "Screwpine",
-    "Passiflora foetida": "Stinking passionflower",
-    "Persicaria chinensis": "Chinese knotweed",
-    "Piper sarmentosum": "Wild betel",
-    "Plumbago zeylanica": "Ceylon leadwort",
-    "Portulaca oleracea": "Common purslane",
-    "Rhodomyrtus tomentosa": "Kemunting",
-    "Rivina humilis": "Bloodberry",
-    "Scaevola taccada": "Sea lettuce",
-    "Schefflera actinophylla": "Umbrella tree",
-    "Scoparia dulcis": "Sweet broomweed",
-    "Sesamum indicum": "Sesame",
-    "Sesuvium portulacastrum": "Sea purslane",
-    "Sonneratia alba": "Mangrove apple",
-    "Spathodea campanulata": "African tulip tree",
-    "Tabebuia rosea": "Trumpet tree",
-    "Terminalia catappa": "Sea almond",
-    "Turnera subulata": "White buttercup",
-    "Typha angustifolia": "Narrow-leaved cattail",
-    "Xylocarpus granatum": "Nyireh bunga",
-    "Zephyranthes rosea": "Pink rain lily",
-    "Zingiber zerumbet": "Shampoo ginger",
-}
-
-STATUS_RANK = {"common": 0, "naturalised": 1, "casual": 2}
 # The extractor splits a handful of words across a line break.
 REPAIRS = {"exo tic": "exotic", "nativ e": "native", "na tive": "native"}
 ENTRY = re.compile(r"^\s*(\d{1,4})\.\s+(.*)$")
-BINOMIAL = re.compile(r"^[A-Z][a-z]+ [a-z][a-z-]+$")
-TARGET_COUNT = 200
+# Table values carry the paper's footnote markers — `vulnerable o`, `common q`.
+# The old selector matched statuses exactly, so every footnoted row silently
+# failed the filter and dropped out of the pool; ~7 species were excluded from
+# the almanac by a typographic detail rather than by any rule.
+FOOTNOTE = re.compile(r" [a-z]$")
+
+
+def clean(value):
+    """A table value with its footnote marker and line-break damage removed."""
+    value = REPAIRS.get(value, value)
+    return FOOTNOTE.sub("", value).strip()
 
 
 def read_table(reader, first_page, last_page):
@@ -163,53 +115,78 @@ def binomial(name):
 def main(pdf_path, output_path):
     from pypdf import PdfReader
 
-    reader = PdfReader(pdf_path)
-    origin = {binomial(n): v for n, _, v in read_table(reader, *ORIGIN_PAGES)}
-    form = {binomial(n): v for n, _, v in read_table(reader, *FORM_PAGES)}
+    with open(CURATED_PATH) as handle:
+        curated = json.load(handle)["species"]
 
-    pool = []
-    for name, family, status in read_table(reader, *STATUS_PAGES):
-        key = binomial(name)
-        if status not in STATUS_RANK or family in NON_ANGIOSPERM_FAMILIES:
+    reader = PdfReader(pdf_path)
+    # Later rows win on a duplicate binomial, which only affects the three
+    # species listed twice in the source; the values agree in every case.
+    status = {binomial(n): (f, clean(v)) for n, f, v in read_table(reader, *STATUS_PAGES)}
+    origin = {binomial(n): clean(v) for n, _, v in read_table(reader, *ORIGIN_PAGES)}
+    form = {binomial(n): clean(v) for n, _, v in read_table(reader, *FORM_PAGES)}
+
+    rows, missing = [], []
+    for entry in curated:
+        name = entry["speciesName"]
+
+        if entry.get("cultivar"):
+            # Carries its own metadata: the checklist has no row to read.
+            rows.append({
+                "id": name.lower().replace(" ", "-"),
+                "speciesName": name,
+                "family": entry["family"],
+                "commonName": entry["commonName"],
+                "status": entry["status"],
+                "origin": entry.get("origin"),
+                "growthForm": entry.get("growthForm"),
+                "source": "cultivar",
+            })
             continue
-        if not BINOMIAL.match(key):
+
+        if name not in status:
+            missing.append(name)
             continue
-        growth = REPAIRS.get(form.get(key, ""), form.get(key, "")).split(" weed")[0]
-        pool.append({
-            "speciesName": key,
+
+        family, state = status[name]
+        rows.append({
+            "id": name.lower().replace(" ", "-"),
+            "speciesName": name,
             "family": family,
-            "status": status,
-            "origin": REPAIRS.get(origin.get(key, ""), origin.get(key, "")) or None,
-            "growthForm": growth or None,
+            "commonName": entry["commonName"],
+            "status": state,
+            "origin": origin.get(name) or None,
+            # `herb weed`, `shrub weed` and friends name a habit plus a
+            # judgement; the almanac wants the habit.
+            "growthForm": (form.get(name) or "").split(" weed")[0] or None,
+            "source": "checklist",
         })
 
-    by_family = defaultdict(list)
-    for row in pool:
-        by_family[row["family"]].append(row)
-    for rows in by_family.values():
-        rows.sort(key=lambda row: (STATUS_RANK[row["status"]], row["speciesName"]))
+    if missing:
+        # Loudly, and without writing: a curated name that does not resolve is
+        # a typo or a synonym the checklist files elsewhere, and silently
+        # dropping it would shrink the almanac without saying so.
+        sys.exit(
+            f"{len(missing)} curated species are not in the checklist:\n  "
+            + "\n  ".join(missing)
+            + "\n\nFix the name in almanac-curated.json, or mark the row "
+              '"cultivar": true and give it its own family/status/origin/growthForm.'
+        )
 
-    selected, depth = [], 0
-    while len(selected) < TARGET_COUNT:
-        took_any = False
-        for family in sorted(by_family):
-            if len(by_family[family]) > depth:
-                selected.append(by_family[family][depth])
-                took_any = True
-                if len(selected) == TARGET_COUNT:
-                    break
-        if not took_any:
-            break
-        depth += 1
-
-    for row in selected:
-        row["id"] = row["speciesName"].lower().replace(" ", "-")
-        row["commonName"] = COMMON_NAMES.get(row["speciesName"])
+    duplicates = {row["id"] for row in rows if [r["id"] for r in rows].count(row["id"]) > 1}
+    if duplicates:
+        sys.exit(f"duplicate species in the curated list: {', '.join(sorted(duplicates))}")
 
     with open(output_path, "w") as handle:
-        json.dump(selected, handle, indent=2)
+        json.dump(rows, handle, indent=2)
         handle.write("\n")
-    print(f"wrote {len(selected)} species from {len(pool)} candidates to {output_path}")
+
+    named = sum(1 for row in rows if row["commonName"])
+    cultivars = sum(1 for row in rows if row["source"] == "cultivar")
+    print(
+        f"wrote {len(rows)} species to {output_path} "
+        f"({named} with a common name, {len(rows) - cultivars} from the checklist, "
+        f"{cultivars} hand-written)"
+    )
 
 
 if __name__ == "__main__":

@@ -74,15 +74,44 @@ afterEach(() => {
 });
 
 describe('almanac taxonomy', () => {
-  it('lists 200 flowering plants with stable ids', () => {
-    expect(ALMANAC_SPECIES).toHaveLength(200);
+  it('lists 50 recognisable plants with stable ids', () => {
+    expect(ALMANAC_SPECIES).toHaveLength(50);
     const ids = ALMANAC_SPECIES.map((species) => species.id);
-    expect(new Set(ids).size).toBe(200);
+    expect(new Set(ids).size).toBe(50);
     for (const species of ALMANAC_SPECIES) {
-      expect(species.id).toBe(almanacIdForSpecies(species.speciesName));
+      // The binomial rule holds for every checklist row. The cultivar is
+      // exempt: `Papilionanthe Miss Joaquim` is three words and
+      // almanacIdForSpecies keeps two, so its id is the whole name slugified
+      // and findAlmanacSpecies resolves it by that instead.
+      if (species.source === 'checklist') {
+        expect(species.id).toBe(almanacIdForSpecies(species.speciesName));
+      }
       expect(species.family).toMatch(/aceae$/);
-      expect(['common', 'naturalised', 'casual']).toContain(species.status);
+      // No status filter any more: curation decides what belongs, so the
+      // status is reported rather than used to exclude. `cultivated only` in
+      // particular is now a normal value — it is what the source calls
+      // bougainvillea and frangipani.
+      expect(species.source).toMatch(/^(checklist|cultivar)$/);
     }
+  });
+
+  /**
+   * The card leads with the common name now, which is only safe because every
+   * species has one. The generated 200 managed 68, and a card with no common
+   * name falls back to the family — worse than the binomial for finding a
+   * plant. If this fails, fix the curated list before touching AlmanacGrid.
+   */
+  it('gives every species a common name, so the card can lead with it', () => {
+    const unnamed = ALMANAC_SPECIES.filter((species) => !species.commonName);
+    expect(unnamed.map((species) => species.speciesName)).toEqual([]);
+  });
+
+  /** Provenance: exactly one row is not from the checklist, and it says so. */
+  it('marks the single cultivar the checklist has no entry for', () => {
+    const cultivars = ALMANAC_SPECIES.filter((species) => species.source === 'cultivar');
+    expect(cultivars.map((species) => species.speciesName)).toEqual([
+      'Papilionanthe Miss Joaquim',
+    ]);
   });
 
   // Identifications arrive with authorities and subspecies attached, and the
@@ -111,7 +140,7 @@ describe('public almanac', () => {
     const response = await request(app).get('/api/almanac');
 
     expect(response.status).toBe(200);
-    expect(response.body.total).toBe(200);
+    expect(response.body.total).toBe(50);
     expect(response.body.discovered).toBe(1);
 
     const tembusu = response.body.species.find(

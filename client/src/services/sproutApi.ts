@@ -303,7 +303,20 @@ export async function setDemoAvatars(
   return response.data;
 }
 
-export type AlmanacStatus = 'common' | 'naturalised' | 'casual';
+/** Mirrors server/data/almanac.ts — the checklist's own categories, verbatim.
+ *  `cultivated only` covers most roadside and garden planting here, so it is a
+ *  normal value on a card rather than an exclusion. */
+export type AlmanacStatus =
+  | 'common'
+  | 'naturalised'
+  | 'casual'
+  | 'cultivated only'
+  | 'weed of uncertain origin'
+  | 'vulnerable'
+  | 'endangered'
+  | 'critically endangered'
+  | 'extinct'
+  | 'globally extinct';
 
 /** A card as the public landing page sees it: no finder, no date, no photo. */
 export interface AlmanacEntry {
