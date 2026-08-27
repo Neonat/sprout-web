@@ -311,6 +311,25 @@ export async function runFirestoreEmulatorTests(
   let cleanupError: Error | undefined;
   try {
     const firebaseCli = require.resolve('firebase-tools/lib/bin/firebase.js');
+    /*
+     * Resolve the declared jest rather than letting a shell find one.
+     *
+     * emulators:exec runs its last argument as a shell command, so a bare
+     * `jest` is whatever PATH turns up first — and that is the copy npm hoists
+     * to the repo ROOT to satisfy ts-jest's peer range (`^29.0.0 || ^30.0.0`,
+     * so npm installs 30.x), not the jest@29 this package actually declares.
+     * Root jest-runtime@30 then loads this package's jest-mock@29 and every
+     * suite dies at load with "this._moduleMocker.clearMocksOnScope is not a
+     * function" — 48 suites, 0 tests, and an error that names neither jest
+     * version.
+     *
+     * Resolving the binary the same way firebase's own CLI is resolved above
+     * makes which jest runs a property of this package's dependencies instead
+     * of a property of how npm happened to hoist. Quoted because a path
+     * through the user's home directory may contain spaces, and extensionless
+     * because that is the subpath jest's own `exports` map publishes.
+     */
+    const jestCli = require.resolve('jest/bin/jest');
     emulatorExitCode = await runCommand(process.execPath, [
       firebaseCli,
       'emulators:exec',
@@ -318,7 +337,7 @@ export async function runFirestoreEmulatorTests(
       FIRESTORE_PROJECT,
       '--only',
       'firestore',
-      'jest --runInBand',
+      `"${process.execPath}" "${jestCli}" --runInBand`,
     ]);
   } catch (error) {
     console.error(error);
