@@ -27,6 +27,22 @@
 
 </div>
 
+## Repository role and related projects
+
+**Web implementation:** this is Neonat's public fork of
+[Kopi-O-Kosong-Beng/sprout-web-app](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app),
+with local development retained. The demo, CI badges and container image above
+refer to the upstream team project. Its technical documentation and attribution
+are retained below.
+
+| Repository | Role |
+|---|---|
+| [sprout_esc](https://github.com/Neonat/sprout_esc) — this repository | TypeScript web game: React, Express and Firestore. |
+| [Sprout](https://github.com/Neonat/Sprout) | Java Android game in `Plantemon/`, with a separately documented Expo client and API port. |
+| [Sprout_Dev_Platform](https://github.com/Neonat/Sprout_Dev_Platform) | Private operations studio for sprite generation, evaluation and review; access required. |
+| [v0-plantemon](https://github.com/Neonat/v0-plantemon) | Private early Next.js/v0 browser prototype; access required. |
+| [v0-plantemon-android-app](https://github.com/Neonat/v0-plantemon-android-app) | Private empty Android placeholder; use `Sprout/Plantemon` for the implementation. |
+
 > [!NOTE]
 > **The live demo's first request is slow, and that is expected.** The API runs
 > on a free tier that sleeps when idle. Measured on 16 August 2026: a cold
@@ -51,8 +67,8 @@ turn-based combat and onto a public leaderboard.
 Requires **Node.js 22** and **Docker**.
 
 ```bash
-git clone https://github.com/Kopi-O-Kosong-Beng/sprout-web-app.git
-cd sprout-web-app
+git clone https://github.com/Neonat/sprout_esc.git
+cd sprout_esc
 docker compose up --build
 ```
 
