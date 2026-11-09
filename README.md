@@ -33,6 +33,36 @@ monorepo with a React/Vite client, an Express API, and Firebase Auth, Firestore
 and Cloud Storage. The source also includes operator tooling and a public
 plant almanac.
 
+## Project story and recognition
+
+Sprout is an AI project founded by Nathaniel Sim, exploring tourism and plant
+diversity through plant discovery and collectible creatures. The Android game,
+web game and operations studio are separate parts of the wider project.
+
+The [public project summary](https://www.linkedin.com/in/nathaniel-sim/details/experience/)
+records the following recognition for **Sprout and its project teams**:
+
+- Best-project awards in SUTD **50.001 Information Systems and Programming** and
+  **50.003 Elements of Software Construction**.
+- A **S$2,000 grant** from SUTD's **Baby Shark Fund**.
+- The **Dell Book Prize**, with a **S$1,500 cash award**.
+
+These are project-level recognitions across Sprout's development; the repository
+role and team attribution below identify the implementation represented here.
+
+## Nathaniel's contribution
+
+Nathaniel Sim ([@Neonat](https://github.com/Neonat)) worked on the **GenAI pipeline,
+developer platform, robustness fuzzing and testing**, as recorded in the
+[team breakdown](#team). Examples of subsequent work in this fork include
+[reusing existing Dex species before generation](https://github.com/Neonat/sprout-web/commit/502a4e445402c045004b796bcafe2c3045be1024),
+[encoding the sprite-quality rubric in generation prompts](https://github.com/Neonat/sprout-web/commit/688f70515c5c723e9c496ef1c9e33ffe1d56e16b)
+and [persisting operator observability reports](https://github.com/Neonat/sprout-web/commit/fccf11313ff3d6ed421661b6ce73be5684030866).
+
+Sprout Web is a collaborative implementation. The full [team credits](#team),
+upstream history and repository-role notes remain the starting points for
+understanding ownership and deployment scope.
+
 ## Repository role and related projects
 
 **Web implementation:** this is Neonat's public fork of
