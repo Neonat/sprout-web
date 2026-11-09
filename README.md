@@ -1,11 +1,11 @@
+# Sprout Web
+
 <div align="center">
 
-<h1>
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/brand/sprout-wordmark-cream.png">
     <img src="docs/brand/sprout-wordmark.png" width="300" alt="Sprout">
   </picture>
-</h1>
 
 **Scan a real plant. Get a creature. Battle with it.**
 
@@ -27,28 +27,35 @@
 
 </div>
 
+Sprout Web turns plant photographs into collectible creatures for a browser
+game: scan, archive, battle and compare discovery rankings. It is a TypeScript
+monorepo with a React/Vite client, an Express API, and Firebase Auth, Firestore
+and Cloud Storage. The source also includes operator tooling and a public
+plant almanac.
+
 ## Repository role and related projects
 
 **Web implementation:** this is Neonat's public fork of
 [Kopi-O-Kosong-Beng/sprout-web-app](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app),
 with local development retained. The demo, CI badges and container image above
-refer to the upstream team project. Its technical documentation and attribution
-are retained below.
+refer to the upstream team project. The feature narrative, report figures and
+team attribution below describe that project; they are retained as context,
+not a fresh test or deployment result for this fork. Local source and history
+have diverged from upstream, so review differences before synchronising.
 
 | Repository | Role |
 |---|---|
-| [sprout_esc](https://github.com/Neonat/sprout_esc) — this repository | TypeScript web game: React, Express and Firestore. |
-| [Sprout](https://github.com/Neonat/Sprout) | Java Android game in `Plantemon/`, with a separately documented Expo client and API port. |
-| [Sprout_Dev_Platform](https://github.com/Neonat/Sprout_Dev_Platform) | Private operations studio for sprite generation, evaluation and review; access required. |
-| [v0-plantemon](https://github.com/Neonat/v0-plantemon) | Private early Next.js/v0 browser prototype; access required. |
-| [v0-plantemon-android-app](https://github.com/Neonat/v0-plantemon-android-app) | Private empty Android placeholder; use `Sprout/Plantemon` for the implementation. |
+| [sprout-web](https://github.com/Neonat/sprout-web) — this repository | TypeScript web game: React, Express and Firestore. |
+| [sprout-android](https://github.com/Neonat/sprout-android) | Java Android game in `Plantemon/`, with a separately documented Expo client and API port. |
+| [sprout-studio](https://github.com/Neonat/sprout-studio) | Private operations studio for sprite generation, evaluation and review; access required. |
+| [sprout-web-prototype](https://github.com/Neonat/sprout-web-prototype) | Private early Next.js/v0 browser prototype; access required. |
+| [sprout-android-placeholder](https://github.com/Neonat/sprout-android-placeholder) | Private empty Android placeholder; use `sprout-android/Plantemon` for the implementation. |
 
 > [!NOTE]
-> **The live demo's first request is slow, and that is expected.** The API runs
-> on a free tier that sleeps when idle. Measured on 16 August 2026: a cold
-> `/api/health` took **12.4 s**, and once warm the same endpoint answered in
-> **0.073 s**. If the demo looks frozen on load, that is the instance waking, not
-> a crash. Running it locally has no such delay.
+> The upstream team recorded a **12.4 s** cold `/api/health` request and a
+> **0.073 s** warm request on 16 August 2026 while using a sleeping free-tier
+> host. This is historical deployment evidence; present availability and
+> latency depend on the upstream service.
 
 ---
 
@@ -64,26 +71,32 @@ turn-based combat and onto a public leaderboard.
 
 ## Quick start
 
-Requires **Node.js 22** and **Docker**.
+Use **Docker with Compose** for the container setup below. **Node.js 22** is
+required when running the npm workspaces directly on your host.
 
 ```bash
-git clone https://github.com/Neonat/sprout_esc.git
-cd sprout_esc
+git clone https://github.com/Neonat/sprout-web.git
+cd sprout-web
 docker compose up --build
 ```
 
-That is the whole setup. The stack runs the frontend, the API, and a Firestore
-emulator with **no API keys and no configuration** — the four paid providers
-behind the sprite pipeline are stubbed (`USE_MOCK_APIS=true`) and mail is
-written to the console, so a reviewer can reach a working system without holding
-an account anywhere.
+This starts the frontend, API and Firestore emulator without provider keys.
+External sprite providers use mock mode (`USE_MOCK_APIS=true`), and mail is
+written to the console. It is a local infrastructure and UI setup: the Compose
+file deliberately leaves Firebase Storage unconfigured, so readiness reports
+`not_ready` and scans cannot finish the sprite-upload step. Firebase login and
+full scan-to-archive use also need the client and server Firebase configuration.
 
 - Frontend — <http://localhost:5173>
 - API health — <http://localhost:3001/api/health>
-- API readiness — <http://localhost:3001/api/health/ready>
+- API readiness — <http://localhost:3001/api/health/ready> (reports missing backing services)
 
-Developing without Docker, seeding data, and troubleshooting are covered in
-[`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md).
+For a complete local player flow, configure Firebase Auth, Firestore and
+Storage using [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md),
+[`client/.env.example`](client/.env.example) and
+[`server/FIREBASE_SETUP.md`](server/FIREBASE_SETUP.md). The development guide
+also covers running without Docker, seeding and troubleshooting; its upstream
+clone URL can be replaced with this fork's URL above.
 
 ## What it does
 
@@ -314,8 +327,8 @@ it in [`docs/TEST_TRACEABILITY.md`](docs/TEST_TRACEABILITY.md).
 
 Infrastructure is declarative — [`render.yaml`](render.yaml) and
 [`vercel.json`](vercel.json) are the source of truth, and every secret is
-injected at runtime rather than baked into an image. The API image is published
-on every push to `main`:
+injected at runtime rather than baked into an image. The upstream API image is published
+by its upstream workflow:
 
 ```bash
 docker pull ghcr.io/kopi-o-kosong-beng/sprout-web-app-server:latest
@@ -372,7 +385,7 @@ The split is deliberate. The documents above explain *how* the system works;
 <summary>Directory tree</summary>
 
 ```
-sprout-web-app/
+sprout-web/
 ├── client/            React + Vite frontend
 ├── server/            Express API
 │   ├── pipeline/      GenAI sprite pipeline (six stages) + fuzz harness
@@ -392,11 +405,11 @@ sprout-web-app/
 
 </details>
 
-## How this repository was built
+## Upstream development process
 
-Every change reached `main` through a reviewed pull request — one feature per
-request, with a named owner, branch protection, and required CI checks. Nobody
-pushed to `main` directly.
+The upstream team documented a reviewed-pull-request workflow: one feature per
+request, named owners, branch protection and required CI checks. This describes
+the team project's process rather than the complete history of this fork.
 
 New behaviour required a test that failed without it. Where a test could not be
 shown to fail first, we say so: two end-to-end drafts that passed with *and*
@@ -424,9 +437,9 @@ attribution is in the pull request history — one feature per pull request.
 
 © 2026 the six authors listed above. All rights reserved.
 
-This repository is private coursework and carries no licence. It may be read by
-those granted access — course staff, and anyone the authors invite — but it is
-not licensed for use, modification or redistribution.
+The upstream project was private coursework and carries no licence. This
+public reference fork preserves the authors' copyright notice; public
+visibility does not grant a licence for use, modification or redistribution.
 
 ---
 
