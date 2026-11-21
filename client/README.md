@@ -1,32 +1,48 @@
-# React + TypeScript + Vite
+# Sprout Web client
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+The React application for Sprout Web. It includes plant scanning, the creature
+archive, battles, rankings, a public almanac, and operator pages. The shared
+project context and team credits are in the [root README](../README.md).
 
-Currently, two official plugins are available:
+## Run locally
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Use Node.js 22. Run these commands from the repository root:
 
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm ci
+cp client/.env.example client/.env.local
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Set `VITE_API_URL` to the Express API address. The example uses
+`http://localhost:3001`. Add the Firebase web configuration for sign-in.
+The [development guide](../docs/DEVELOPMENT.md) covers backend configuration,
+Firebase, and local seeding. Provider credentials belong on the server.
+
+Vite serves the client at [localhost:5173](http://localhost:5173). The root
+`dev` command starts both workspaces. To start only this client, run
+`npm run dev -w client`.
+
+## Check the client
+
+Run these commands from the repository root:
+
+```bash
+npm test -w client
+npm run typecheck -w client
+npm run lint -w client
+npm run build -w client
+```
+
+Vitest uses jsdom and React Testing Library. The production build checks
+TypeScript before writing `client/dist/`. End-to-end tests and their backing
+services are documented in the root README.
+
+## Source and configuration
+
+- `src/App.tsx` defines routes, layouts, and access wrappers.
+- `src/pages/` contains player pages, public pages, and operator pages.
+- `src/studio/` contains the embedded pipeline tooling.
+- `src/index.css` defines the Tailwind CSS theme with `@theme`.
+- `vite.config.ts` configures React, Tailwind CSS, and Vitest.
+- `.oxlintrc.json` configures the React, TypeScript, and Oxc lint rules.

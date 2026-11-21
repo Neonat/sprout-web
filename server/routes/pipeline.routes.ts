@@ -1073,7 +1073,7 @@ async function runStage2cOnward(
     // happens to the render is reported by the persistence log line below.
     details: autoApproved
       ? 'Passed all programmatic checks & cute score >= 4.'
-      : `Below the auto-approve bar (Cutout OK: ${removeBgResult.removeBgOk}, Cute Judge: ${combinedScores.judgeCute || 4}/5).`,
+      : `Below the auto-approve bar (Cutout OK: ${removeBgResult.removeBgOk}, Cute Judge: ${combinedScores.judgeCute === undefined ? 'not scored' : `${combinedScores.judgeCute}/5`}).`,
     evalScores: combinedScores,
     autoApproved,
   });
