@@ -38,6 +38,14 @@ Vitest uses jsdom and React Testing Library. The production build checks
 TypeScript before writing `client/dist/`. End-to-end tests and their backing
 services are documented in the root README.
 
+## Stack in the client
+
+React components render the player and operator interfaces. React Router
+separates document and game layouts, while the Auth context supplies session
+state to protected routes. Firebase handles browser authentication; Axios
+calls the Express API for game and pipeline operations. Tailwind CSS defines
+the shared theme. Provider keys remain behind the server API.
+
 ## Source and configuration
 
 - `src/App.tsx` defines routes, layouts, and access wrappers.

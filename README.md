@@ -17,81 +17,75 @@
 
 *These demo creatures were rendered by this repository's pipeline using species-name prompts.*
 
-[![tests](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/tests.yml/badge.svg)](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/tests.yml)
-[![docker](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/docker.yml/badge.svg)](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/docker.yml)
-[![tests: 1101](https://img.shields.io/badge/tests-1101-2ea44f)](#testing)
-[![Node 22](https://img.shields.io/badge/node-22-339933)](package.json)
-[![image: ghcr.io](https://img.shields.io/badge/image-ghcr.io-blue)](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/pkgs/container/sprout-web-app-server)
-
-**[Live demo](https://sprout-web-app-jet.vercel.app)** · [Quick start](#quick-start) · [How it works](#how-it-works) · [Engineering notes](#engineering-notes) · [Cloud-native](#cloud-native-design) · [Testing](#testing) · [Docs](#documentation)
+[Upstream demo](https://sprout-web-app-jet.vercel.app) · [Local setup](#local-setup) · [Architecture](#stack-and-architecture) · [Documentation](#documentation)
 
 </div>
 
-Sprout Web turns plant photographs into collectible creatures for a browser
-game: scan, archive, battle and compare discovery rankings. It is a TypeScript
-monorepo with a React/Vite client, an Express API, and Firebase Auth, Firestore
-and Cloud Storage. The source also includes operator tooling and a public
-plant almanac.
+Sprout Web turns plant photographs into collectible creatures. Players scan a
+plant, keep its creature in an archive, and use it in turn-based battles. A
+public almanac connects the game to plants found in Singapore.
 
-## Project story and recognition
+This is a collaborative SUTD coursework project and a public fork of
+[Kopi-O-Kosong-Beng/sprout-web-app](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app).
+The fork retains local development and has diverged from upstream. The linked
+demo belongs to the upstream team project; its availability is separate from
+this source checkout.
 
-Sprout is a collaborative AI project exploring tourism and plant diversity
-through plant discovery and collectible creatures. The Android game, web game
-and operations studio are separate parts of the wider project.
+## What you can do
 
-The [public project summary](https://www.linkedin.com/in/nathaniel-sim/details/experience/)
-records the following recognition for **Sprout and its project teams**:
+- Scan a plant photo through species identification, prompt creation, sprite
+  generation, background removal, finishing, and creature assembly.
+- Save discoveries with botanical metadata and species-derived battle stats.
+  Repeated scans update the existing species record.
+- Fight the fixed Thornback opponent in PVE battles with quick, guard,
+  signature, and heal moves. The server owns battle outcomes and progression.
+- Compare XP and discovery rankings, or browse the public plant almanac.
+- Use verified accounts, contact tickets, and permission-gated operator pages.
 
-- Best-project awards in SUTD **50.001 Information Systems and Programming** and
-  **50.003 Elements of Software Construction**.
-- A **S$2,000 grant** from SUTD's **Baby Shark Fund**.
-- The **Dell Book Prize**, with a **S$1,500 cash award**.
+## Stack and architecture
 
-These are project-level recognitions across Sprout's development; the repository
-role and team attribution below identify the implementation represented here.
-
-See the [team credits](#team) for the collaborative web implementation.
-
-## Repository role and related projects
-
-**Web implementation:** this is Neonat's public fork of
-[Kopi-O-Kosong-Beng/sprout-web-app](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app),
-with local development retained. The demo, CI badges and container image above
-refer to the upstream team project. The feature narrative, report figures and
-team attribution below describe that project; they are retained as context,
-not a fresh test or deployment result for this fork. Local source and history
-have diverged from upstream, so review differences before synchronising.
-
-| Repository | Role |
+| Technology | Role in this project |
 |---|---|
-| [sprout-web](https://github.com/Neonat/sprout-web) — this repository | TypeScript web game: React, Express and Firestore. |
-| [sprout-android](https://github.com/Neonat/sprout-android) | Java Android game in `Plantemon/`, with a separately documented Expo client and API port. |
-| [sprout-studio](https://github.com/Neonat/sprout-studio) | Private operations studio for sprite generation, evaluation and review; access required. |
-| [sprout-web-prototype](https://github.com/Neonat/sprout-web-prototype) | Private early Next.js/v0 browser prototype; access required. |
-| [sprout-android-placeholder](https://github.com/Neonat/sprout-android-placeholder) | Private empty Android placeholder; use `sprout-android/Plantemon` for the implementation. |
+| React, React Router, and Vite | The browser client has separate public, player, and operator routes. Vite builds the static frontend. |
+| TypeScript | Models API data, pipeline events, and battle state across the client and server workspaces. |
+| Express and Node.js 22 | The API verifies accounts, applies game rules, and streams pipeline progress through server-sent events. Provider credentials stay here. |
+| Firebase Auth, Firestore, and Cloud Storage | Auth identifies players, Firestore stores game records, and Storage holds generated sprites. Emulator-backed tests exercise the persistence boundary. |
+| Plant.id, Gemini, NVIDIA, and background-removal providers | Separate pipeline stages identify plants, craft prompts, render creatures, and produce cutouts. Mock mode supports local tests without paid calls. |
+| sharp | Validates image input and performs local sprite processing. Its native dependency is part of the container build. |
+| Docker, Vercel, and Render | Compose runs local infrastructure. The deployment configuration separates a static frontend from the containerized API. |
 
-> [!NOTE]
-> The upstream team recorded a **12.4 s** cold `/api/health` request and a
-> **0.073 s** warm request on 16 August 2026 while using a sleeping free-tier
-> host. This is historical deployment evidence; present availability and
-> latency depend on the upstream service.
+```mermaid
+flowchart LR
+    Player --> Client[React client]
+    Client --> API[Express API]
+    API --> Auth[Firebase Auth]
+    API --> DB[(Firestore)]
+    API --> Pipeline[Sprite pipeline]
+    Pipeline --> Providers[External providers]
+    Pipeline --> Storage[Cloud Storage]
+```
 
----
+The client presents game state while the server owns rules, persistence, and
+provider access. The workspaces connect typed browser interfaces to a stateful
+game and an external image pipeline, with separate tests for each boundary.
 
-A walk through a garden usually produces a forgotten photo rather than lasting
-knowledge. Sprout attaches a game loop to botanical learning instead.
-Photograph a plant, a six-stage GenAI pipeline identifies the species and
-generates a pixel-art creature from it, that creature persists in your archive
-with battle statistics derived from the species itself, and you can take it into
-turn-based combat and onto a public leaderboard.
+### Engineering details
 
-**16** use cases · **16** misuse cases · **1,101** tests across **4** tiers ·
-**11 of 12** factors passing · **56k** lines of TypeScript · **6** team members
+- The [battle engine](server/services/battle-engine.ts) uses a seeded random
+  sequence. [Persistence validation](server/repositories/battle-replay.ts)
+  reconstructs the session and rejects state that differs from deterministic
+  replay. Web healing is a battle move with its own rules; the native Android
+  game's three-heal system is a separate implementation.
+- The [image ingest gate](server/pipeline/ingest/imageIngest.ts) checks format,
+  size, dimensions, and decodability before provider calls. The
+  [fuzzing notes](md/FUZZ_TESTING.md) describe mutation-based coverage.
+- [Liveness, readiness, and shutdown handling](md/CONTAINERIZATION.md) separate
+  a running process from available backing services. The Storage readiness
+  check verifies configuration, not a live upload.
 
-## Quick start
+## Local setup
 
-Use **Docker with Compose** for the container setup below. **Node.js 22** is
-required when running the npm workspaces directly on your host.
+For the container setup, install Docker with Compose:
 
 ```bash
 git clone https://github.com/Neonat/sprout-web.git
@@ -99,346 +93,89 @@ cd sprout-web
 docker compose up --build
 ```
 
-This starts the frontend, API and Firestore emulator without provider keys.
-External sprite providers use mock mode (`USE_MOCK_APIS=true`), and mail is
-written to the console. It is a local infrastructure and UI setup: the Compose
-file deliberately leaves Firebase Storage unconfigured, so readiness reports
-`not_ready` and scans cannot finish the sprite-upload step. Firebase login and
-full scan-to-archive use also need the client and server Firebase configuration.
+Open the [frontend](http://localhost:5173),
+[API liveness](http://localhost:3001/api/health), or
+[API readiness](http://localhost:3001/api/health/ready).
 
-- Frontend — <http://localhost:5173>
-- API health — <http://localhost:3001/api/health>
-- API readiness — <http://localhost:3001/api/health/ready> (reports missing backing services)
+Compose starts the client, API, and Firestore emulator with
+`USE_MOCK_APIS=true` and console mail. It leaves Storage unconfigured, so
+readiness reports `not_ready` and scans cannot finish the sprite-upload step.
+Firebase login and a complete scan-to-archive flow also need Auth and client
+Firebase configuration.
 
-For a complete local player flow, configure Firebase Auth, Firestore and
-Storage using [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md),
-[`client/.env.example`](client/.env.example) and
-[`server/FIREBASE_SETUP.md`](server/FIREBASE_SETUP.md). The development guide
-also covers running without Docker, seeding and troubleshooting; its upstream
-clone URL can be replaced with this fork's URL above.
+For a full local player flow, follow the
+[development guide](docs/DEVELOPMENT.md),
+[client environment example](client/.env.example), and
+[server Firebase setup](server/FIREBASE_SETUP.md). Use this fork's clone URL
+when following the upstream guide. Direct workspace development requires
+Node.js 22; the guide covers configuration, seeding, and emulator prerequisites.
+Provider keys belong on the server.
 
-## What it does
+## Checks
 
-| Feature | Description |
-|---|---|
-| **Scan → Archive** | Upload a plant photo; six stages identify it, generate a sprite, remove the background, quantise to a fixed palette, and persist the result. Re-scanning a known species updates the record instead of duplicating it. |
-| **Creature archive** | Every species you have discovered, with habitat, conservation status, and battle statistics derived deterministically from the species name — the same plant yields the same creature on every machine. |
-| **PVE battles** | Turn-based combat against a fixed opponent under a seeded RNG. Sessions are stored as event logs and re-simulated on every read, so a server restart cannot corrupt a battle in progress. |
-| **Leaderboards** | XP and first-discovery rankings, computed as read-only projections so a ranking can never disagree with the records it summarises. |
-| **Almanac** | A public reference of 50 plants findable in Singapore, at `/almanac`. |
-| **Accounts** | Firebase Auth with email verification, password reset, and a fail-closed operator tier for admin tooling. |
-| **Contact tickets** | Query submission with independent submitter and administrator notification. |
-
-## How it works
-
-```mermaid
-flowchart LR
-    U(["Player"]) -->|photo| C
-
-    subgraph edge ["Vercel"]
-        C["React SPA<br/>Vite · TypeScript"]
-    end
-
-    subgraph origin ["Render · our own container image"]
-        A["Express API<br/>Node · TypeScript"]
-        P["GenAI pipeline<br/>6 stages, SSE-streamed"]
-        A -. run-stream .-> P
-    end
-
-    subgraph data ["Firebase"]
-        AU["Auth"]
-        F[("Firestore<br/>5 collections")]
-        S[("Cloud Storage<br/>sprites")]
-    end
-
-    C -->|HTTPS| A
-    A --> AU
-    A --> F
-    A --> S
-    P -->|sprite| S
-```
-
-**The scan-to-battle loop**, which is the whole product:
-
-```mermaid
-flowchart TB
-    PH(["Photo of a real plant"]) --> I
-
-    subgraph pipeline ["GenAI pipeline · six stages, streamed to the client"]
-        direction LR
-        I["identify"] --> PC["promptCraft"] --> G["generate"]
-        G --> R["removeBg"] --> FI["finish"] --> AS["assemble"]
-    end
-
-    AS --> AR[("Archive · species, stats, sprite URL")]
-
-    subgraph play ["What the creature is for"]
-        direction LR
-        B["PVE battle"] --> L["Leaderboard"]
-    end
-
-    AR --> B
-```
-
-Battle statistics are derived deterministically from the species name, so the
-same plant yields the same creature on every machine. That is what makes the
-archive worth keeping and the leaderboard worth trusting.
-
-**A modular monolith, deliberately.** One deployable. `server/pipeline/` is the
-single seam that would justify extraction: it is CPU-bound, accepts large
-request bodies, holds SSE connections open, and depends on four third-party
-providers. The argument, including why we did *not* split it, is in
-[`md/CONTAINERIZATION.md`](md/CONTAINERIZATION.md).
-
-**TypeScript end to end.** React + Vite on the frontend, Node + Express on the
-backend, Cloud Firestore as the only datastore.
-
-## Engineering notes
-
-The parts of this repository worth reading, and why.
-
-**The battle engine is deterministic and replay-verified.** Sessions are stored
-as event logs and re-simulated on every read rather than as mutable state, so a
-restart mid-battle loses nothing and a stored session can be audited long after
-the fact. The client is a strictly presentation-only layer over it: the UI
-derives turn feedback from the server's event log, never by diffing HP, which is
-what makes guards, misses and heals individually attributable.
-→ `server/services/battle-engine.ts`
-
-**Untrusted images meet a discriminated gate before they meet a decoder.** The
-ingest gate sorts every rejection into one of eight named reasons and never
-throws. A header pass rejects on format and declared dimensions *before* the
-decode that a decompression bomb would need; the decode pass then catches what a
-header cannot show, such as a file truncated behind a valid header. A mutation
-fuzzer attacks it and asserts every mutated input lands in one of the eight.
-→ [`md/FUZZ_TESTING.md`](md/FUZZ_TESTING.md)
-
-**The end-to-end suite was mutation-verified, not assumed.** The sign-out
-journey was checked by deliberately breaking sign-out: the header assertion
-stayed green while the storage and reload assertions failed, which is how we
-know the spec tests the thing it claims to. Two earlier drafts that *could not
-fail* are kept in comments atop `e2e/archive-to-battle.spec.ts` as a warning.
-
-## Cloud-native design
-
-Render always ran this service in a container. Before we wrote a Dockerfile it
-built one from our source with a buildpack we never saw and could not change, so
-writing our own did not introduce containers to the project — it moved ownership
-of the build recipe into version control.
-
-**Why it mattered here specifically.** `sharp` (libvips) and `bcrypt` install
-per-platform prebuilt binaries, so our Windows and macOS machines and Render's
-Linux hosts each ran a *different compiled artefact* under the same version
-number in `package.json`. A green suite on a laptop therefore said nothing about
-the binary production actually runs. Building the dependency tree once inside a
-Debian-slim image, with `npm ci` against `package-lock.json`, makes the Linux
-build the only build.
-
-### Liveness and readiness answer different questions
-
-Two endpoints, deliberately not one.
-
-| Endpoint | Question | Behaviour |
-|---|---|---|
-| `GET /api/health` | Is the process alive? | 200 every time; touches nothing outside the process |
-| `GET /api/health/ready` | Can this instance serve traffic *now*? | 200 or **503**, with a named line per dependency |
-
-The Firestore line is a real `listCollections()` round trip against the
-configured project, bounded by its own **2.5 s** timeout
-(`DEFAULT_PROBE_TIMEOUT_MS`) so a hanging dependency cannot hang the probe.
-Probes run concurrently, so the worst case is the slowest probe rather than the
-sum. The storage line is a configuration check only, and the response says so
-rather than implying a round trip we do not make.
-
-This is not a claim you have to take on trust. Probing the live deployment while
-the free-tier instance was asleep:
-
-```
-attempt 1  HTTP 503  in 2.68s   ← correctly refusing traffic while waking
-attempt 2  HTTP 200  in 0.158s
-attempt 3  HTTP 200  in 0.168s
-
-{"status":"ready","checks":[
-  {"name":"firestore","status":"ok","durationMs":95},
-  {"name":"storage_bucket_configured","status":"ok","durationMs":1}]}
-```
-
-A single health endpoint would have returned 200 on attempt 1 and sent traffic
-to an instance that could not yet serve it.
-
-### Disposability was the factor we failed
-
-Audited against the twelve factors, **eleven pass**. Concurrency (VIII) is
-partial: the process is stateless so the property holds, but only one instance
-runs today. Disposability (IX) was the one outright failure, and it is fixed
-rather than merely described.
-
-`server/lifecycle.ts` now stops accepting connections, drains what is in flight,
-and exits 0. Three properties make it real rather than decorative:
-
-- **Bounded.** A stuck keep-alive connection cannot hold the container open until
-  SIGKILL. `DEFAULT_SHUTDOWN_TIMEOUT_MS` is **10 s**, after which it forces exit.
-- **Idempotent.** Platforms re-send `SIGTERM`, and an impatient operator sends a
-  second one. Repeat signals do not restart or corrupt the sequence.
-- **Asserted.** Both the cold start and the clean shutdown are checked in CI on
-  every build, so the property cannot rot silently.
-
-### Limits and defaults
-
-| Control | Value | Where |
-|---|---|---|
-| Scan budget | 100 pipeline runs per rolling hour, per account | `server/routes/pipeline.routes.ts` |
-| Global rate limit | 1000 requests / 15 min, per IP | Express middleware |
-| Image payload | ≤ 15 MB, ≥ 16 px per edge, ≤ 40,000,000 px | `server/pipeline/ingest/imageIngest.ts` |
-| Accepted formats | JPEG, PNG, WebP | Same |
-| Rejection reasons | 8, discriminated and never thrown | Same |
-| Firestore collections | 5 | `users`, `avatar_records`, `query_tickets`, `password_history`, `counters` |
-| API surface | 32 route handlers across 10 routers | `server/routes/` |
-
-Every secret is injected at runtime rather than baked into an image, and the
-emulator-versus-managed-Firestore choice is a single environment variable, which
-is what keeps development and production the same shape.
-
-Full write-up, including the known limits we did not solve, is in
-[`md/CONTAINERIZATION.md`](md/CONTAINERIZATION.md); measured operational figures
-are in [`docs/DELL_METRICS.md`](docs/DELL_METRICS.md).
-
-## Testing
+Run workspace checks from the repository root after installing dependencies
+with `npm ci`:
 
 ```bash
-npm test                      # server + client
-npm test -w server            # Jest (Firestore emulator) + Vitest (pipeline)
-npm test -w client            # Vitest + React Testing Library
-npm run test:e2e              # Playwright against the real stack
+npm test
+npm run typecheck -w server
+npm run typecheck -w client
+npm run lint -w client
+npm run test:e2e
 ```
 
-| Suite | Files | Tests | Tooling |
-|---|---:|---:|---|
-| Server integration & API | 46 | 624 | Jest + Supertest against the Firestore emulator |
-| Client components & routing | 28 | 309 | Vitest + React Testing Library |
-| Pipeline, ingest gate & fuzzing | 18 | 155 | Vitest |
-| End-to-end journeys | 6 | 13 | Playwright (Chromium) against the real client, server, and Firestore/Auth/Storage emulators |
-| **Total** | **98** | **1101** | |
+`npm test` runs server Jest tests against the Firestore emulator, pipeline
+Vitest tests, and client Vitest tests with React Testing Library. Playwright
+starts the real client and API with Auth, Firestore, and Storage emulators;
+external providers use fixtures. See the
+[test traceability guide](docs/TEST_TRACEABILITY.md) and
+[command reference](docs/COMMANDS.md) for suite scope and prerequisites.
 
-Measured on 9 August 2026 at commit `b184b62` by running each suite and reading
-the runner's own total, not by counting `it(` declarations. That distinction is
-load-bearing: a static grep of the server suite returns about **416** where Jest
-executes **624**, because parameterised cases expand at runtime. These are the
-figures in the group report (Table 15), so the repository and the submission
-reconcile.
+## Limitations
 
-Integration tests run against the Firestore **emulator** rather than mocks, so a
-query Firestore would reject fails in the suite too. The end-to-end tier
-substitutes nothing between the click and the database except the four paid
-providers. Test code is **22,111 lines against 33,803 lines of source**, a 0.65:1
-ratio.
-
-Every use case is mapped to its sequence diagram and to the suites that verify
-it in [`docs/TEST_TRACEABILITY.md`](docs/TEST_TRACEABILITY.md).
-
-## Deployment
-
-| Layer | Platform | Notes |
-|---|---|---|
-| Frontend | Vercel | Static build from `client/dist`, CDN-served |
-| API | Render | Our own container image, built from [`server/Dockerfile`](server/Dockerfile) |
-| Data | Firebase | Auth, Firestore, Cloud Storage |
-
-Infrastructure is declarative — [`render.yaml`](render.yaml) and
-[`vercel.json`](vercel.json) are the source of truth, and every secret is
-injected at runtime rather than baked into an image. The upstream API image is published
-by its upstream workflow:
-
-```bash
-docker pull ghcr.io/kopi-o-kosong-beng/sprout-web-app-server:latest
-```
-
-Hosting, environment variables and CORS are documented in
-[`md/DEPLOYMENT.md`](md/DEPLOYMENT.md).
-
-## Known limitations
-
-Stated plainly, because a system's boundaries are part of its documentation.
-
-- **Email delivers to one address only.** Without a purchased sending domain and
-  MX configuration, our provider will not deliver reliably to arbitrary
-  inboxes. The code path is complete and tested against the provider's
-  interface; what is unproven is delivery. This bounds sign-up verification,
-  password reset, ticket confirmation and verification resend.
-- **PVP is designed, not built.** The model and diagrams exist; the feature does
-  not.
-- **Two operator pages have no component test.** Thirteen of fifteen client
-  pages carry one. The Studio and API Test pages do not.
-- **Three flows have no automated journey.** Password reset, ticket status and
-  verification resend are covered at unit and integration level but by no
-  Playwright journey. Password reset matters most — it is the only one of the
-  three that changes a credential.
-- **The operator dashboards are proven negatively.** The suite proves an
-  unauthorised caller is refused at every dashboard. It does not yet prove an
-  authorised operator can complete the task.
+- Compose alone does not provide a complete authenticated scan flow.
+- Provider output quality and live email delivery require separate validation.
+  The documented upstream mail setup limits delivery to one address.
+- PVP has design material but no implemented player-versus-player mode.
+- Operator access checks have automated coverage; complete authorized operator
+  journeys and some account and ticket flows still lack browser coverage.
+- The committed demo creatures above were generated from species-name prompts.
+  They are not evidence of photograph-conditioned generation. Optional
+  reference photos are absent from this checkout.
 
 ## Documentation
 
-| Document | What it covers |
+| Guide | Contents |
 |---|---|
-| [`docs/final-submission/`](docs/final-submission/) | The submitted group report, and a map from each claim it makes to the file in this repository that evidences it |
-| [`docs/DEVELOPMENT.md`](docs/DEVELOPMENT.md) | Full local setup, seeding, troubleshooting |
-| [`docs/COMMANDS.md`](docs/COMMANDS.md) | Every command in the repo |
-| [`docs/TEST_TRACEABILITY.md`](docs/TEST_TRACEABILITY.md) | Use case → sequence diagram → test suite, hyperlinked both ways |
-| [`md/CONTAINERIZATION.md`](md/CONTAINERIZATION.md) | Container design, resiliency, twelve-factor audit, known limits |
-| [`md/FUZZ_TESTING.md`](md/FUZZ_TESTING.md) | The image ingest gate and its mutation fuzzer |
-| [`md/DEPLOYMENT.md`](md/DEPLOYMENT.md) | Hosting, environment variables, CORS |
-| [`md/DESIGN.md`](md/DESIGN.md) | Visual design system |
-| [`md/requirements.md`](md/requirements.md) | Endpoint-level specification |
-| [`md/checkoff.md`](md/checkoff.md) | Flow-by-flow walkthrough with file references |
-| [`docs/`](docs/) | Verification evidence records and design specs |
-| [`obsidian-vault/`](obsidian-vault/README.md) | **The decision record** — why each choice was made, with dated evidence |
+| [Development](docs/DEVELOPMENT.md) | Local configuration, seeding, and troubleshooting. |
+| [Client](client/README.md) | Frontend commands, source layout, and environment setup. |
+| [Commands](docs/COMMANDS.md) | Workspace scripts and operational commands. |
+| [Test traceability](docs/TEST_TRACEABILITY.md) | Use cases, diagrams, and test suites. |
+| [Container design](md/CONTAINERIZATION.md) | Image build, probes, shutdown, and operating limits. |
+| [Deployment](md/DEPLOYMENT.md) | Hosting, environment variables, and CORS. |
+| [Submission](docs/final-submission/) | Group report and evidence map. |
+| [Operational measurements](docs/DELL_METRICS.md) | Historical measurements and their context. |
 
-The split is deliberate. The documents above explain *how* the system works;
-[`obsidian-vault/`](obsidian-vault/README.md) explains *why* it is the way it is
-— the arguments, the rejected alternatives, and the open questions.
+## Related work and recognition
 
-## Repository layout
+Sprout explores plant diversity and tourism through plant discovery and
+collectible creatures. The
+[Android game](https://github.com/Neonat/sprout-android) is a Java implementation
+with independent Expo and API ports. The private
+[operations studio](https://github.com/Neonat/sprout-studio) and
+[earlier browser prototype](https://github.com/Neonat/sprout-web-prototype)
+have separate histories and require access.
 
-<details>
-<summary>Directory tree</summary>
-
-```
-sprout-web/
-├── client/            React + Vite frontend
-├── server/            Express API
-│   ├── pipeline/      GenAI sprite pipeline (six stages) + fuzz harness
-│   ├── services/      Domain logic
-│   ├── repositories/  Firestore access
-│   └── tests/         Integration suites
-├── e2e/               Playwright end-to-end journeys
-├── docker/            Firestore emulator image
-├── docs/              Development guides, specs, evidence records
-├── md/                Feature and subsystem documentation
-├── scripts/           One-off tooling and the E2E stack orchestrator
-├── obsidian-vault/    Obsidian decision record (the "why")
-├── render.yaml        Backend infrastructure (declarative)
-├── vercel.json        Frontend hosting
-└── docker-compose.yml
-```
-
-</details>
-
-## Upstream development process
-
-The upstream team documented a reviewed-pull-request workflow: one feature per
-request, named owners, branch protection and required CI checks. This describes
-the team project's process rather than the complete history of this fork.
-
-New behaviour required a test that failed without it. Where a test could not be
-shown to fail first, we say so: two end-to-end drafts that passed with *and*
-without the fix are kept in comments atop `e2e/archive-to-battle.spec.ts`,
-because the lesson was worth more than the deletion.
+The [public project summary](https://www.linkedin.com/in/nathaniel-sim/details/experience/)
+records best-project awards in SUTD 50.001 Information Systems and Programming
+and 50.003 Elements of Software Construction, a S$2,000 Baby Shark Fund grant,
+and the Dell Book Prize with a S$1,500 cash award. These recognize Sprout and
+its project teams across its development, rather than this fork alone.
 
 ## Team
 
 Built by Cohort 3, Team 2 for **50.003 Elements of Software Construction** at the
-Singapore University of Technology and Design, May–August 2026.
+Singapore University of Technology and Design, May to August 2026.
 
 | Member | Focus |
 |---|---|
@@ -450,7 +187,7 @@ Singapore University of Technology and Design, May–August 2026.
 | **Chia Zhi Feng** | Backend and infrastructure, testing, deployment, release review |
 
 Ownership above is the baseline the team agreed on 31 July 2026. Per-feature
-attribution is in the pull request history — one feature per pull request.
+attribution is in the pull request history.
 
 ## Copyright
 
@@ -459,8 +196,3 @@ attribution is in the pull request history — one feature per pull request.
 The upstream project was private coursework and carries no licence. This
 public reference fork preserves the authors' copyright notice; public
 visibility does not grant a licence for use, modification or redistribution.
-
----
-
-*An academic project. The engineering is real; the limitations above are stated
-because they are too.*
