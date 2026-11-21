@@ -69,7 +69,7 @@ jobs:
       # ("clearMocksOnScope is not a function"). `node node_modules/jest/...`
       # is unambiguous and works under both sh (CI) and cmd (local Windows).
       - name: 'Group 1: eligibility + catalog + species/sprite/scan/pipeline-auth unit suites (no emulator)'
-        run: node node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/battle-eligibility.test.ts tests/battle-catalog.test.ts tests/species-stats.test.ts tests/sprite-storage.test.ts tests/scan-persistence.test.ts tests/pipeline-auth.test.ts
+        run: node node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/battle-eligibility.test.ts tests/battle-catalog.test.ts tests/species-stats.test.ts tests/sprite-storage.test.ts tests/scan-persistence.test.ts tests/pipeline-auth.test.ts tests/pipeline-evaluation-event.test.ts
 
       - name: 'Group 2: Firestore battle repository + avatar HTTP API + avatar upsert/discovery + dex repository + scan complete event'
         run: npm exec -- firebase emulators:exec --project sprout-test --only firestore "node node_modules/jest/bin/jest.js --runInBand --runTestsByPath tests/battle-repository.test.ts tests/avatar-api.test.ts tests/avatar-upsert.test.ts tests/dex-repository.test.ts tests/avatar-discovery-api.test.ts tests/pipeline-complete-event.test.ts"
