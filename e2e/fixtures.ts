@@ -70,12 +70,11 @@ export async function signInThroughForm(page: Page): Promise<void> {
   await page.getByLabel('Password').fill('any-password-is-accepted-locally');
   await page.getByRole('button', { name: /log in/i }).click();
 
-  // Wait on the header reflecting the session, not on the URL: navigation
-  // resolves before React has the profile, so a URL assertion passes and then
-  // the next line fails for reasons that look unrelated.
-  await expect(page.getByRole('link', { name: /^archive$/i }).first()).toBeVisible({
-    timeout: 20_000,
-  });
+  // Both header variants show Log out once the session is ready; Archive is
+  // only present in the game header, not the admin page this account opens.
+  await expect(
+    page.getByRole('banner').getByRole('button', { name: /^log out$/i })
+  ).toBeVisible({ timeout: 20_000 });
 }
 
 export const test = base;
