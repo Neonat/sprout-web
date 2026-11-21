@@ -21,6 +21,7 @@ without a key fails loudly instead of committing art no model made.
 
 A missing file is not fatal — `PlantVisuals` renders the empty pot on its own.
 
-The demo plants are **not** here: their art is hand-made and lives in
-`client/public/plants/`. Scanned plants are not here either — their sprite is
-stored on the avatar record itself.
+The demo plants live in `client/public/plants/`. Their committed sprites are
+pipeline renders documented in that folder's [README](../plants/README.md).
+Scanned plant sprites are stored in Cloud Storage, with their URLs on the avatar
+records.
