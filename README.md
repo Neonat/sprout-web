@@ -15,7 +15,7 @@
 <img src="client/public/plants/SPRITE_Helianthus.png" width="104" alt="Helianthus creature">
 <img src="client/public/plants/SPRITE_Amanita.png" width="104" alt="Amanita creature">
 
-*Every creature above was produced by the pipeline in this repository from a photograph of the real species.*
+*These demo creatures were rendered by this repository's pipeline using species-name prompts.*
 
 [![tests](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/tests.yml/badge.svg)](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/tests.yml)
 [![docker](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/docker.yml/badge.svg)](https://github.com/Kopi-O-Kosong-Beng/sprout-web-app/actions/workflows/docker.yml)

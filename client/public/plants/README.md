@@ -1,8 +1,9 @@
 # Demo plant art
 
-Art for the five demo plants, served by the client at `/plants/`. Each plant
-is a pair: the sprite that stands in the pot on the shelf, and the photograph
-it was drawn from, which the archive shows on the specimen card.
+Art for the five demo plants, served by the client at `/plants/`. The committed
+sprites were rendered from species-name prompts. The templates also name
+optional photographs for the archive's specimen cards, but those photographs
+are not checked in.
 
 The committed sprites are pipeline renders — hand-made art never landed here,
 which left every seeded avatar 404ing to a bare pot. Until someone draws them
@@ -17,7 +18,7 @@ npm run sprites:generate -w server -- --force # re-render
 Dropping in a hand-drawn `SPRITE_<Key>.png` simply replaces the render; the
 generator skips files that already exist unless `--force` is passed.
 
-| Plant | Sprite | Photo |
+| Plant | Sprite | Optional photo filename |
 | --- | --- | --- |
 | Helianthus annuus (sunflower) | `SPRITE_Helianthus.png` | `IMG_Helianthus.jpg` |
 | Quercus robur (English oak) | `SPRITE_Quercus.png` | `IMG_Quercus.jpg` |
